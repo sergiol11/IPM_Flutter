@@ -213,7 +213,7 @@ class Botones extends StatelessWidget{
                   ],
                 )
             ),
-            Spacer(flex: orientacion == "Vertical" ? 50 : 0)
+            Spacer(flex: orientacion == "Vertical" ? 50 : 1)
           ],
         )
     );
