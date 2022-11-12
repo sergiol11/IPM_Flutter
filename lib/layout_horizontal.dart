@@ -24,7 +24,7 @@ class LayoutHorizontal extends StatelessWidget{
               child: Botones("Horizontal")),
           const Expanded(
               flex: 50,    // 55%
-              child: Text("Merda"))
+              child: ModalBottomSheetDemo("Horizontal",))
         ],
       ),
     );

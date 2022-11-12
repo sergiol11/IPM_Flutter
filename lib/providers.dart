@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:practica/app.dart';
+import 'package:practica/edamam.dart';
 import 'package:provider/provider.dart';
 
 
@@ -66,5 +67,15 @@ class OpcionesSeleccionadas with ChangeNotifier, DiagnosticableTreeMixin {
   void set_opciones_alergias(List<Opcion> opciones){
     _opcionesAlergias.clear();
     _opcionesAlergias = List.of(opciones);
+  }
+}
+
+class InfoEdamamRecetas with ChangeNotifier, DiagnosticableTreeMixin {
+  late RecipeBlock _info_recetas;
+
+  RecipeBlock get info_recetas => _info_recetas;
+
+  void set_info_recetas(RecipeBlock new_info) {
+    _info_recetas = new_info;
   }
 }
