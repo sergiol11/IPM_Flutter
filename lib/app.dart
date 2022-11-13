@@ -328,16 +328,17 @@ class _LayoutMeuState extends State<LayoutMeu>{
             body: Column(
               children: [
                 Expanded(
-                  child: ListView.builder(
-                      itemCount: snapshot.data?.recipes?.length,
+                  child: ListView.separated(
+                      itemCount: snapshot.data?.recipes?.length.toInt() ?? 0,
                       itemBuilder: (context, index) {
                         return ListTile(
                             leading: CircleAvatar(
-                              child: ImageBuilder(snapshot.data?.recipes?[index].image),
                               backgroundColor: Colors.white,
+                              child: ImageBuilder(snapshot.data?.recipes?[index].image),
                             ),
                             title: Text(_parser(snapshot.data?.recipes?[index].label)),
-                            subtitle: Text("Calorias: ${_parser(snapshot.data?.recipes?[index].calories?.toStringAsFixed(0))}          Ingredientes: ${_parser(snapshot.data?.recipes?[2].ingredients?.length.toString())}"),
+                            subtitle: Text("Calorias: ${_parser(snapshot.data?.recipes?[index].calories?.toStringAsFixed(0))}     "
+                                "     Ingredientes: ${_parser(snapshot.data?.recipes?[2].ingredients?.length.toString())}"),
                             trailing: SizedBox(
                               height: 35,
                               width: 35,
@@ -349,7 +350,14 @@ class _LayoutMeuState extends State<LayoutMeu>{
                               ),
                             )
                         );
-                      }),
+                      }, separatorBuilder: (BuildContext context, int index) {  // Separador de elementos
+                    return const Divider(
+                      color: Colors.green,
+                      thickness: 2,
+                      indent: 16,  // Espacio inicial
+                      endIndent: 20,   // Espacio final
+                    );
+                  },),
                 )
               ],
             ),
