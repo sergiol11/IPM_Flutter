@@ -109,9 +109,10 @@ class _SelectorPageState extends State<SelectorPage>{
       body: SafeArea(
         child: FilterListWidget<Opcion>(
           themeData: FilterListThemeData(context),
-          allButtonText: "Todos",
+          //allButtonText: "Todos",
           resetButtonText: "Borrar",
           applyButtonText: "Guardar",
+          controlButtons: const [/*ControlButtonType.All,*/ ControlButtonType.Reset],  // Quitamos botón todos de opcions de lista
           hideSelectedTextCount: false,
           listData: widget.dieta_o_alergia == "Dietas" ? listaAux.dietas
               : listaAux.alergias,
@@ -127,17 +128,6 @@ class _SelectorPageState extends State<SelectorPage>{
             /// Used to print text on chip
             return item!.opcion;
           },
-          // choiceChipBuilder: (context, item, isSelected) {
-          //   return Container(
-          //     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          //     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          //     decoration: BoxDecoration(
-          //         border: Border.all(
-          //       color: isSelected! ? Colors.blue[300]! : Colors.grey[300]!,
-          //     )),
-          //     child: Text(item.name),
-          //   );
-          // },
           validateSelectedItem: (list, val) {
             ///  identify if item is selected or not
             return list!.contains(val);

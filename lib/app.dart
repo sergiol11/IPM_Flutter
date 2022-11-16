@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:practica/providers.dart';
@@ -25,13 +26,18 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NombreReceta()),
         ChangeNotifierProvider(create: (_) => MinMaxCalorias()),
         ChangeNotifierProvider(create: (_) => OpcionesSeleccionadas()),
+        ChangeNotifierProvider(create: (_) => InfoEdamamRecetas())
       ],
-      child: MaterialApp(
-          theme: ThemeData(
-            primarySwatch: Colors.green,
-          ),
-          home: MasterDetail(title: 'Edamam',)
-      ),);
+      child: GestureDetector(   // Tocar pantalla e quitar foco do widget no que esté
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        child: MaterialApp(
+            theme: ThemeData(
+              primarySwatch: Colors.green,
+            ),
+            home: MasterDetail(title: 'Edamam',)
+        ),
+      )
+    );
   }
 }
 
@@ -154,12 +160,12 @@ class Botones extends StatelessWidget{
                   ),
                   Expanded(
                       flex: 31,
-                      child: Calorias(limite: "Min",)
+                      child: Calorias("Min",)
                   ),
                   Spacer(flex: 3),
                   Expanded(
                       flex: 31,
-                      child: Calorias(limite: "Max",)
+                      child: Calorias("Max",)
                   ),
                   Spacer(flex: 6)
                 ],
@@ -228,6 +234,29 @@ class Botones extends StatelessWidget{
   }
 }
 
+
+class AvisoError extends StatelessWidget{
+  final String mensaje_error;
+  
+  AvisoError(this.mensaje_error);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Icon(CupertinoIcons.exclamationmark_bubble,
+        color: Colors.green,
+      size: 50,),
+      content: Text(mensaje_error, textAlign: TextAlign.center,),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('OK'),
+        ),
+      ],
+    );
+  }
+}
+
 ////////////////////////// LIST VIEW  ///////////////////////////////////////////
 
 class ModalBottomSheetDemo extends StatelessWidget {
@@ -244,29 +273,29 @@ class ModalBottomSheetDemo extends StatelessWidget {
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           // Padding para que non se vaia a curva!
-          padding: orientacion == "Vertical" ? EdgeInsets.only(top: 10) : EdgeInsets.only(left: 10,),
-          child: LayoutMeu("Hola"),   // AQUI E ONDE POÑERMOS INFO DE COUSA DE ABAIXO!!!
-          decoration: orientacion == "Vertical" ? const BoxDecoration(  // Borde curvo + color de borde negro
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.green,
-                spreadRadius: 1,
-              ),
-            ],
-          )
-              :
-          const BoxDecoration(  // Borde curvo + color de borde negro
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomLeft: Radius.circular(15)),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.green,
-                spreadRadius: 1,
-              ),
-            ],
-          )
+            padding: orientacion == "Vertical" ? EdgeInsets.only(top: 10) : EdgeInsets.only(left: 10,),
+            child: LayoutMeu("Hola"),   // AQUI E ONDE POÑERMOS INFO DE COUSA DE ABAIXO!!!
+            decoration: orientacion == "Vertical" ? const BoxDecoration(  // Borde curvo + color de borde negro
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.green,
+                  spreadRadius: 1,
+                ),
+              ],
+            )
+                :
+            const BoxDecoration(  // Borde curvo + color de borde negro
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomLeft: Radius.circular(15)),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.green,
+                  spreadRadius: 1,
+                ),
+              ],
+            )
         );
       },
     );
@@ -290,11 +319,11 @@ class _LayoutMeuState extends State<LayoutMeu>{
   @override
   void initState() {
     super.initState();
-    recetas = search_recipes("Salad");
+    recetas = search_recipes("Mustard");
   }
 
   String _parser(String? palabra){
-    return palabra != null ? palabra : "Error";
+    return palabra != null ? palabra : "Error";   // Cambiar por outro mensaje
   }
 
   @override
@@ -334,6 +363,7 @@ class _LayoutMeuState extends State<LayoutMeu>{
                         return ListTile(
                             leading: CircleAvatar(
                               backgroundColor: Colors.white,
+                              radius: 25,  // Tamaño imagen
                               child: ImageBuilder(snapshot.data?.recipes?[index].image),
                             ),
                             title: Text(_parser(snapshot.data?.recipes?[index].label)),
@@ -345,7 +375,7 @@ class _LayoutMeuState extends State<LayoutMeu>{
                               child: FloatingActionButton(
                                 onPressed: () {},
                                 backgroundColor: Colors.white,
-                                child: Icon(Icons.arrow_forward_ios,
+                                child: const Icon(Icons.arrow_forward_ios,
                                   color: Colors.green,),
                               ),
                             )
@@ -482,7 +512,17 @@ class _BotonContadorState extends State<BotonContador>{
   Widget build(BuildContext context) {
     return FloatingActionButton(
       // Incrementamos o decrementamos el contador según el botón y escogemos el icono
-        onPressed: () => widget.accion == "Add" ? context.read<Contador>().increment() : context.read<Contador>().decrement(),
+        onPressed: () => {
+          if(widget.accion == "Add"){    // Incrementar
+            context.read<Contador>().increment()
+          }else{    // Decrementar
+            if(context.read<Contador>().count == 2){
+              showDialog(context: context, builder: (BuildContext context) => AvisoError("El mínimo de ingredientes son 2")),
+            }else{
+              context.read<Contador>().decrement()
+            }
+          }
+        },
         child: Icon(widget.accion == "Add" ? Icons.add : Icons.remove));
   }
 }
@@ -495,50 +535,73 @@ class ContadorListener extends StatelessWidget{
           fontSize: 20
       ),);
   }
-
 }
-
-
 
 class Calorias extends StatefulWidget {
   final String limite;
 
-  const Calorias({required this.limite, key}) : super(key: key);
+  const Calorias(this.limite);
 
   @override
-  _CaloriasState createState() => _CaloriasState();
+  State<Calorias> createState() => _CaloriasState();
 }
 
 
 class _CaloriasState extends State<Calorias> {     // É sin estdo???
-// Crea un controlador de texto. Lo usaremos para recuperar el valor actual
-  // del TextField!
-  //final myController = TextEditingController();
+  late FocusNode myFocusNode;
+  final fieldText = TextEditingController();   // controlamos texto que se introduce
+  RegExp regex = RegExp(r'^[0-9]*$');  // regex que solo permite digitos
 
   @override
   void initState() {
     super.initState();
+    myFocusNode = FocusNode();
   }
 
   @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    myFocusNode.dispose();
+    fieldText.dispose();
+
+    super.dispose();
+  }
+
+  
+  @override
   Widget build(BuildContext context) {
-    return  TextField(   // NON POÑAS AQUÍ CONST QUE JODES TODO COÑO
-      //controller: myController,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 3.0),  // Tamaño do Widget
-        filled: true,
-        labelText: widget.limite,
-      ),
+    return TextFormField(   // NON POÑAS AQUÍ CONST
+
+        focusNode: myFocusNode,
+        controller: fieldText,
+        restorationId: 'name_field',
+        textInputAction: TextInputAction.next,
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 3.0),  // Facer menos alto o widget
+          filled: true,
+          labelText: widget.limite,
+        ),
+        onTap: () => myFocusNode.requestFocus(),
       // Gardamos cada cambio que ocurra por se usuario non lle da a OK no teclado cando escriba!
-      onChanged: (text) => widget.limite == "Min" ? () => context.read<MinMaxCalorias>().set_min(text)
-          : context.read<MinMaxCalorias>().set_max(text),   // Modificamos el valor máximo o mínimo de las calorías
+      onChanged: (text) => {
+        if(regex.hasMatch(text)){  // Actualizamos provider si se cumplen las condiciones
+          widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min(text)
+              : context.read<MinMaxCalorias>().set_max(text),
+        }else{     // Lanzamos aviso se non se cumplen condicións
+          showDialog(context: context, builder: (BuildContext context) => AvisoError("Solo se permiten dígitos")),
+          widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min("")
+              : context.read<MinMaxCalorias>().set_max(""), // Actualizamos calorias a vacío
+          fieldText.clear(),    // Eliminamos texto del widget
+          myFocusNode.unfocus(),    // Quitamos foco del campo
+        }
+      }
     );
   }
 }
 
 
 class Buscador extends StatefulWidget {    // É sin estado?
-//final String receta;
 
   const Buscador();
 
@@ -549,14 +612,12 @@ class Buscador extends StatefulWidget {    // É sin estado?
 
 class _BuscadorState extends State<Buscador> {    // ESTARÍA GUAI QUE ESTO SUGIERA MENTRES ESTÁ BUSCANDO NOMES DE RECETAS!!!!!!!!!!!!!
   late FocusNode myFocusNode;
-  // Crea un controlador de texto. Lo usaremos para recuperar el valor actual
-  // del TextField!
-  //final myController = TextEditingController();
+  RegExp regex = RegExp(r'^[a-zA-Z ]*$');  // regex que solo permite letras y espacios
+  final fieldText = TextEditingController();   // controlamos texto que se introduce
 
   @override
   void initState() {
     super.initState();
-
     myFocusNode = FocusNode();
   }
 
@@ -564,7 +625,7 @@ class _BuscadorState extends State<Buscador> {    // ESTARÍA GUAI QUE ESTO SUGI
   void dispose() {
     // Clean up the focus node when the Form is disposed.
     myFocusNode.dispose();
-    //myController.dispose();
+    fieldText.dispose();
 
     super.dispose();
   }
@@ -573,8 +634,8 @@ class _BuscadorState extends State<Buscador> {    // ESTARÍA GUAI QUE ESTO SUGI
   Widget build(BuildContext context) {
 
     return TextFormField(
-      //controller: myController,
         focusNode: myFocusNode,
+        controller: fieldText,
         restorationId: 'name_field',
         textInputAction: TextInputAction.next,
         textCapitalization: TextCapitalization.words,
@@ -588,11 +649,16 @@ class _BuscadorState extends State<Buscador> {    // ESTARÍA GUAI QUE ESTO SUGI
         onTap: () => myFocusNode.requestFocus(), // Para doble clic hai que usar Gesture!
 
         // Gardamos o nome da receta introducido cada vez que hai un cambio por se usuario non lle dá a OK no teclado
-        onChanged: (text) => context.read<NombreReceta>().set_nombre_receta(text)
-      //myFocusNode.unfocus(),  //Esta parte é cando se lle da ao enter de deixar de escribir para gardar o valor este aquí
-      //person.name = value;
-      //_phoneNumber.requestFocus();
-      //validator: _validateName,*/// Aquí é cando se pon error se está vacío! Con esto do validator
+        onChanged: (text) => {
+          if(regex.hasMatch(text)){  // Actualizamos provider si se cumplen las condiciones do texto
+            context.read<NombreReceta>().set_nombre_receta(text),
+          }else{     // Lanzamos aviso se non se cumplen condicións
+            showDialog(context: context, builder: (BuildContext context) => AvisoError("Solo se permiten letras y espacios")),
+            context.read<NombreReceta>().set_nombre_receta(""),   // Actualizamos nombre a vacio
+            fieldText.clear(),    // Eliminamos texto del widget
+            myFocusNode.unfocus()    // Quitamos foco del campo
+          }
+        }
     );
   }
 }
@@ -628,7 +694,7 @@ class _SelectorState extends State<Selector> {
   Future<void> _openFilterDialogOpciones() async {
     await FilterListDialog.display<Opcion>(
       context,
-      allButtonText: "Todos",
+      //allButtonText: "Todos",
       resetButtonText: "Borrar",
       applyButtonText: "Guardar",
       hideSelectedTextCount: false,   //Poñer a false se queremos ver cantos levamos seleccionados
@@ -640,7 +706,7 @@ class _SelectorState extends State<Selector> {
           : context.read<OpcionesSeleccionadas>().opcionesAlergias,    // Modificamos en el provider la lista de opciones correspondiente
       choiceChipLabel: (item) => item!.opcion,
       validateSelectedItem: (list, val) => list!.contains(val),
-      controlButtons: [ControlButtonType.All, ControlButtonType.Reset],
+      controlButtons: [/*ControlButtonType.All,*/ ControlButtonType.Reset],  // Quitamos botón todos de opcions de lista
       onItemSearch: (opt, query) {
         /// When search query change in search bar then this method will be called
         ///

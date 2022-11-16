@@ -1,12 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:practica/app.dart';
-import 'package:practica/edamam.dart';
-import 'package:provider/provider.dart';
+
 
 
 class Contador with ChangeNotifier, DiagnosticableTreeMixin {
-  int _count = 0;
+  int _count = 2;  // Inicialmente a 2 porque no puede ser menos
 
   int get count => _count;
 
@@ -23,7 +22,7 @@ class Contador with ChangeNotifier, DiagnosticableTreeMixin {
 
 
 class NombreReceta with ChangeNotifier, DiagnosticableTreeMixin {
-  String _nombre_receta = "adios";
+  String _nombre_receta = "";
 
   String get nombre_receta => _nombre_receta;
 
@@ -34,19 +33,19 @@ class NombreReceta with ChangeNotifier, DiagnosticableTreeMixin {
 
 
 class MinMaxCalorias with ChangeNotifier, DiagnosticableTreeMixin {
-  int _min = 0;
-  int _max = 50000;
+  String _min = "";
+  String _max = "";
 
-  int get min => _min;
+  String get min => _min;
 
-  int get max => _max;
+  String get max => _max;
 
   void set_max(String value){
-    _max = int.parse(value);
+    _max = value;
   }
 
   void set_min(String value){
-    _min = int.parse(value);
+    _min = value;
   }
 }
 
@@ -71,11 +70,16 @@ class OpcionesSeleccionadas with ChangeNotifier, DiagnosticableTreeMixin {
 }
 
 class InfoEdamamRecetas with ChangeNotifier, DiagnosticableTreeMixin {
-  late RecipeBlock _info_recetas;
+  late Widget info;
+  String _busqueda = "";
 
-  RecipeBlock get info_recetas => _info_recetas;
+  void set_info(Widget widget){
+    info = widget;
+  }
 
-  void set_info_recetas(RecipeBlock new_info) {
-    _info_recetas = new_info;
+  String get busqueda => _busqueda;
+
+  void set_busqueda(String new_search){
+    _busqueda = new_search;
   }
 }
