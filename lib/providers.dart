@@ -6,8 +6,10 @@ import 'package:practica/app.dart';
 
 class Ingredientes with ChangeNotifier, DiagnosticableTreeMixin {
   int _ingredientes = 2;  // Inicialmente a 2 porque no puede ser menos
+  bool _aplicar = true;
 
   int get ingredientes => _ingredientes;
+  bool get aplicar => _aplicar;
 
   void increment() {
     _ingredientes++;
@@ -17,6 +19,10 @@ class Ingredientes with ChangeNotifier, DiagnosticableTreeMixin {
   void decrement() {
     _ingredientes--;
     notifyListeners();
+  }
+
+  void cambiarValor(bool valor){
+    _aplicar = valor;
   }
 }
 

@@ -134,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
         /// When search query change in search bar then this method will be called
         ///
         /// Check if items contains query
-        return opt.opcion!.toLowerCase().contains(query.toLowerCase());
+        return opt.opcion.toLowerCase().contains(query.toLowerCase());
       },
 
       onApplyButtonClick: (list) {

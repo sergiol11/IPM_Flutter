@@ -64,15 +64,33 @@ class LayoutVertical extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Botones("Vertical");
+    return const Botones("Vertical");
   }
 }
 
-
-class Botones extends StatelessWidget{
+class Botones extends StatefulWidget{
   final String orientacion;
-  
-  Botones(this.orientacion, {super.key});
+
+  const Botones(this.orientacion, {super.key});
+
+  @override
+  _Botones createState() => _Botones();
+}
+
+class _Botones extends State<Botones>{
+  late bool visible;
+
+  @override
+  void initState() {
+    super.initState();
+    visible = true;
+  }
+
+  update(bool valor){
+    setState(() {
+      visible = valor;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +118,7 @@ class Botones extends StatelessWidget{
                 ],
               ),
             ),
-            orientacion == "Vertical" ?    // 2 botones para Dietas y Alergias en vertical
+            widget.orientacion == "Vertical" ?    // 2 botones para Dietas y Alergias en vertical
             Expanded(
               flex: 8,
               child: Row(   // Botóns Dietas e Alergias
@@ -170,50 +188,78 @@ class Botones extends StatelessWidget{
               child: Row(
                 children: [
                   const Spacer(flex: 5),
-                  const Expanded(
-                    flex: 30,
-                    child: Text("Ingredientes:",
-                      style: TextStyle(
-                        fontSize: 22
+                  IgnorePointer(
+                    ignoring: !visible,
+                    child: AnimatedOpacity(
+                      opacity: visible ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 200),
+                      child: const Expanded(
+                          flex: 30,
+                          child: Text("Ingredientes:",
+                            style: TextStyle(
+                                fontSize: 22
+                            ),
+                          )
                       ),
-                    )
+                    ),
                   ),
-                  const Spacer(flex: 1),
-                  const Expanded(
+                  const Spacer(flex: 3),
+                  Expanded(
                     flex: 9,
-                    child: BotonContadorIngredientes("Remove")
+                    child: IgnorePointer(
+                      ignoring: !visible,
+                      child: AnimatedOpacity(
+                        opacity: visible ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: const BotonContadorIngredientes("Remove")
+                      ),
+                    ),
                   ),
                   const Spacer(flex: 1),
                   Expanded(
-                    flex: 6,     // Mínimo 6 ou 7 %!!
-                    child: Center(
-                      child: Text(
-                        '${context.watch<Ingredientes>().ingredientes}',
-                        style: const TextStyle(
-                          fontSize: 20
+                    flex: 6,
+                    child: IgnorePointer(
+                      ignoring: !visible,
+                      child: AnimatedOpacity(
+                        opacity: visible ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                         child: Center(
+                          child: Text(
+                            '${context.watch<Ingredientes>().ingredientes}',
+                            style: const TextStyle(
+                                fontSize: 20
+                            )
+                          )
                         )
-                      )
-                    )
+                      ),
+                    ),
                   ),
                   const Spacer(flex: 1),
-                  const Expanded(
+                  Expanded(
                     flex: 9,
-                    child: BotonContadorIngredientes("Add")
+                    child: IgnorePointer(
+                      ignoring: !visible,
+                      child: AnimatedOpacity(
+                        opacity: visible ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: const BotonContadorIngredientes("Add")
+                      ),
+                    ),
                   ),
-                  Container(
+                  SizedBox(
                     height: 55,
                     width: 100,
-                    child: const ConfiguradorIngredientes(),
+                    child: ConfiguradorIngredientes(update)
                   ),
                   const Spacer(flex: 6),
                 ],
               ),
             ),
             //Spacer(flex: orientacion == "Vertical" ? 50 : 1)
-            orientacion == "Vertical" ?
+            widget.orientacion == "Vertical" ?
             const Expanded(
               flex: 50,
-              child: LayoutRecetas("Vertical",)
+              child: LayoutRecetas("Vertical")
             )
                 : const Spacer(flex: 1,)
           ],
@@ -349,8 +395,21 @@ class _ListaRecetas extends State<ListaRecetas>{
           return Scaffold(
             body: Column(
               children: [
-                BotonBuscar(update),
                 Expanded(
+                  flex: 10,
+                  child: Row(
+                    children: [
+                      const Spacer(flex: 30),
+                      Expanded(
+                          flex: 40,
+                          child: BotonBuscar(update)
+                      ),
+                      const Spacer(flex: 30),
+                    ],
+                  )
+                ),
+                Expanded(
+                  flex: 90,
                   child: ListView.separated(
                       itemCount: snapshot.data?.recipes?.length.toInt() ?? 0,
                       itemBuilder: (context, index) {
@@ -498,7 +557,13 @@ class CommonMethods {
       alergias += "&health=${listaAlergias[i].opcion}";
     }
 
-    return "$receta$dietas$alergias$calorias";
+    String ingredientes = "";
+    if(context.read<Ingredientes>().aplicar){
+      int numIngr = context.read<Ingredientes>().ingredientes;
+      ingredientes = "&ingr=$numIngr";
+    }
+
+    return "$receta$ingredientes$dietas$alergias$calorias";
   }
 }
 
@@ -523,8 +588,7 @@ class BotonBuscar extends StatelessWidget{
       isReverse: true,
       selectedTextColor: Colors.black,
       transitionType: TransitionType.LEFT_TO_RIGHT,
-      //textStyle: submitTextStyle,
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.green,
       borderColor: Colors.green,
       borderRadius: 50,
       borderWidth: 2,
@@ -825,7 +889,9 @@ class ListaOpciones {
 }
 
 class ConfiguradorIngredientes extends StatefulWidget {
-  const ConfiguradorIngredientes({super.key});
+  Function update;
+
+  ConfiguradorIngredientes(this.update, {super.key});
 
   @override
   State<ConfiguradorIngredientes> createState() => _ConfiguradorIngredientesState();
@@ -841,6 +907,8 @@ class _ConfiguradorIngredientesState extends State<ConfiguradorIngredientes> {
       onChanged: (bool value) {
         setState(() {
           confIngredientes = value;
+          context.read<Ingredientes>().cambiarValor(value);
+          widget.update(value);
         });
       }
     );
