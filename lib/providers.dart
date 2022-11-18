@@ -4,25 +4,31 @@ import 'package:practica/app.dart';
 
 
 
-class Contador with ChangeNotifier, DiagnosticableTreeMixin {
-  int _count = 2;  // Inicialmente a 2 porque no puede ser menos
+class Ingredientes with ChangeNotifier, DiagnosticableTreeMixin {
+  int _ingredientes = 2;  // Inicialmente a 2 porque no puede ser menos
+  bool _aplicar = true;
 
-  int get count => _count;
+  int get ingredientes => _ingredientes;
+  bool get aplicar => _aplicar;
 
   void increment() {
-    _count++;
+    _ingredientes++;
     notifyListeners();
   }
 
   void decrement() {
-    _count--;
+    _ingredientes--;
     notifyListeners();
+  }
+
+  void cambiarValor(bool valor){
+    _aplicar = valor;
   }
 }
 
 
 class NombreReceta with ChangeNotifier, DiagnosticableTreeMixin {
-  String _nombre_receta = "";
+  String _nombre_receta = "salad";
 
   String get nombre_receta => _nombre_receta;
 
@@ -60,12 +66,12 @@ class OpcionesSeleccionadas with ChangeNotifier, DiagnosticableTreeMixin {
 
   void set_opciones_dietas(List<Opcion> opciones){
     _opcionesDietas.clear();
-    _opcionesDietas = List.of(opciones);
+    _opcionesDietas = opciones;
   }
 
   void set_opciones_alergias(List<Opcion> opciones){
     _opcionesAlergias.clear();
-    _opcionesAlergias = List.of(opciones);
+    _opcionesAlergias = opciones;
   }
 }
 

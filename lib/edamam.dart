@@ -94,21 +94,18 @@ class RecipeBlock {
   int from;
   int to;
   int count;
-  String? nextBlock;
   List<Recipe>? recipes;
 
   RecipeBlock(
       {required this.from,
         required this.to,
         required this.count,
-        this.nextBlock,
         this.recipes});
 
   @override
   String toString() {
     return "RecipeBlock: From: $from | To: $to | Count: $count\n" +
-        "$recipes\n" +
-        "NextBlock: $nextBlock";
+        "$recipes";
   }
 }
 
@@ -123,9 +120,8 @@ List<String>? parse_list(var list) =>
     list != null ? List<String>.from(list) : null;
 
 Future<RecipeBlock?> search_recipes(String query) async {
-  // TODO: include a search criteria!
   var formattedQuery =
-      "type=$TYPE&beta=true&app_id=$APP_ID&app_key=$APP_KEY&q=$query";
+      "type=$TYPE&beta=true&app_id=$APP_ID&app_key=$APP_KEY$query";
 
   var uri = Uri(
       scheme: "https", host: API_URL, path: ENDPOINT, query: formattedQuery);
@@ -192,21 +188,19 @@ Future<RecipeBlock?> search_recipes(String query) async {
         from: data["from"],
         to: data["to"],
         count: data["count"],
-        nextBlock: data["_links"]["next"]["href"],
         recipes: recipes);
   }
+
   return block;
 }
 
 void main(List<String> arguments) async {
-  if (arguments.isEmpty) {
-    print("Usage: dart edamam.dart search_string");
-  } else {
-    try {
-      var block = await search_recipes(arguments[0]);
-      print(block);
-    } catch (exception) {
-      print(exception);
-    }
+
+  try {
+    var block = await search_recipes("&q=salad&diet=balanced&health=DASH&calories=2000-3000");
+    print(block);
+  } catch (exception) {
+    print(exception);
   }
+
 }

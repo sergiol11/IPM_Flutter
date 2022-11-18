@@ -1,30 +1,29 @@
 import 'dart:core';
-import 'dart:core';
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:filter_list/filter_list.dart';
-import 'package:gradient_floating_button/gradient_floating_button.dart';
 import 'package:practica/app.dart';
 import 'package:practica/providers.dart';
 import 'package:provider/provider.dart';
-import 'edamam.dart';
 
 class LayoutHorizontal extends StatelessWidget{
+
+  const LayoutHorizontal({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
       body: Row(   // Tomamos el diseño como horizontal
-        children: [
+        children: const [
           Expanded(
               flex: 50,   // 45%
-              child: Botones("Horizontal")),
-          const Expanded(
+              child: Botones("Horizontal")
+          ),
+          Expanded(
               flex: 50,    // 55%
-              child: ModalBottomSheetDemo("Horizontal",))
+              child: LayoutRecetas("Horizontal")
+          )
         ],
       ),
     );
@@ -38,7 +37,7 @@ class SelectorHorizontal extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
+      children: const [
         Expanded(child: BotonDietaAlergiaHorizontal())
       ],
     );
@@ -47,19 +46,24 @@ class SelectorHorizontal extends StatelessWidget{
 
 class BotonDietaAlergiaHorizontal extends StatelessWidget{
 
-  BotonDietaAlergiaHorizontal();
+  const BotonDietaAlergiaHorizontal({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-        onPressed: () => Navigator.push(context,      // Navegamos á próxima pantalla
+        onPressed: () => Navigator.push(
+            context,      // Navegamos á próxima pantalla
             MaterialPageRoute(
-                builder: (context) => Selectores())),
+                builder: (context) => const Selectores()
+            )
+        ),
         icon: const Icon(Icons.arrow_forward_ios),
         label: const Text("Dietas y Alergias",
           style: TextStyle(
               fontSize: 16
-          ),));
+          ),
+        )
+    );
   }
 }
 
@@ -68,34 +72,61 @@ final ListaOpciones listaOpciones = ListaOpciones();
 
 
 class Selectores extends StatelessWidget{
+  const Selectores({super.key});
+
 
   @override
   Widget build(BuildContext context) {
-    MultiSplitView multiSplitView = MultiSplitView(children: [
-      SelectorPage("Dietas"), SelectorPage("Alergias")]);
+    /*MultiSplitView multiSplitView = MultiSplitView(
+        children: const [
+          SelectorPage("Dietas"),
+          SelectorPage("Alergias")
+        ]
+    );
 
 
     MultiSplitViewTheme theme = MultiSplitViewTheme(
-        child: multiSplitView,
         data: MultiSplitViewThemeData(
             dividerPainter: DividerPainters.dashed(
-                color: Colors.deepOrange, highlightedColor: Colors.black)));
+                color: Colors.deepOrange,
+                highlightedColor: Colors.black
+            )
+        ),
+        child: multiSplitView
+    );*/
 
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
       appBar: AppBar(
-        title: Text("Dietas y Alergias"),
+        title: const Text("Dietas y Alergias"),
       ),
-      body: theme,
+      body: Row(
+        children: const [
+          Expanded(
+              flex: 50,
+              child: SelectorPage("Dietas")),
+          VerticalDivider(
+            width: 10,
+            thickness: 2,
+            indent: 0,
+            endIndent: 0,
+            color: Colors.green,
+          ),
+          Expanded(
+              flex: 50,
+              child: SelectorPage("Alergias")),
+        ],
+      ),
     );
   }
 
 }
 
 class SelectorPage extends StatefulWidget{
-  final String dieta_o_alergia;
+  final String dietaOalergia;
 
-  SelectorPage(this.dieta_o_alergia);
+  const SelectorPage(this.dietaOalergia, {super.key});
 
   @override
   State<SelectorPage> createState() => _SelectorPageState();  // Esto non sei se poñer como cabrero ou como prueba
@@ -106,37 +137,35 @@ class _SelectorPageState extends State<SelectorPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
       body: SafeArea(
         child: FilterListWidget<Opcion>(
           themeData: FilterListThemeData(context),
           //allButtonText: "Todos",
+          hideSearchField: true,  // Así en horizontal non temos problema
           resetButtonText: "Borrar",
           applyButtonText: "Guardar",
           controlButtons: const [/*ControlButtonType.All,*/ ControlButtonType.Reset],  // Quitamos botón todos de opcions de lista
           hideSelectedTextCount: false,
-          listData: widget.dieta_o_alergia == "Dietas" ? listaAux.dietas
+          listData: widget.dietaOalergia == "Dietas" ? listaAux.dietas
               : listaAux.alergias,
-          selectedListData: widget.dieta_o_alergia == "Dietas" ? context.read<OpcionesSeleccionadas>().opcionesDietas
+          selectedListData: widget.dietaOalergia == "Dietas" ? context.read<OpcionesSeleccionadas>().opcionesDietas
               : context.read<OpcionesSeleccionadas>().opcionesAlergias,    // Modificamos en el provider la lista de opciones correspondiente
           onApplyButtonClick: (list) {
             setState(() {
-              widget.dieta_o_alergia == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
+              widget.dietaOalergia == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
                   : context.read<OpcionesSeleccionadas>().set_opciones_alergias(List.from(list!));  // Actualizamos la lista de opciones correspondiente
-            });
+            }
+            );
           },
           choiceChipLabel: (item) {
-            /// Used to print text on chip
             return item!.opcion;
           },
           validateSelectedItem: (list, val) {
-            ///  identify if item is selected or not
             return list!.contains(val);
           },
           onItemSearch: (opt, query) {
-            /// When search query change in search bar then this method will be called
-            ///
-            /// Check if items contains query
-            return opt.opcion!.toLowerCase().contains(query.toLowerCase());
+            return opt.opcion.toLowerCase().contains(query.toLowerCase());
           },
         ),
       ),
