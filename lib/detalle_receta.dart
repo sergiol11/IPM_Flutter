@@ -9,13 +9,13 @@ class LayoutDetalle extends StatelessWidget{
   final String orientacion;
   final Recipe info_receta;
 
-  LayoutDetalle(this.orientacion, this.info_receta);
+  LayoutDetalle(this.orientacion, this.info_receta, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
-      body: orientacion == "Vertical" ? LayoutDetalleVertical(info_receta) : LayoutDetalleHorizontal()
+      body: orientacion == "Vertical" ? LayoutDetalleVertical(info_receta) : LayoutDetalleHorizontal(info_receta)
     );
   }
 }
@@ -23,7 +23,7 @@ class LayoutDetalle extends StatelessWidget{
 class LayoutDetalleVertical extends StatelessWidget{
   final Recipe info_receta;
 
-  LayoutDetalleVertical(this.info_receta);
+  LayoutDetalleVertical(this.info_receta, {super.key});
 
 
   @override
@@ -53,13 +53,9 @@ class LayoutDetalleVertical extends StatelessWidget{
         const Spacer(flex: 1,),
         Expanded(
           flex: 30,
-          child: CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 110,  // Tamaño imagen
-            child: OctoImage(image: NetworkImage(info_receta.image!),  // Imagen
-              progressIndicatorBuilder: OctoProgressIndicator.circularProgressIndicator(),   // Circulo de progreso
-              errorBuilder: OctoError.icon(color: Colors.green,),    // Icono si no se obtuvo la imagen
-            ),
+          child: OctoImage(image: NetworkImage(info_receta.image!),  // Imagen
+            progressIndicatorBuilder: OctoProgressIndicator.circularProgressIndicator(),   // Circulo de progreso
+            errorBuilder: OctoError.icon(color: Colors.green,),    // Icono si no se obtuvo la imagen
           ),
         ),
         const Spacer(flex: 2,),
@@ -69,7 +65,7 @@ class LayoutDetalleVertical extends StatelessWidget{
               children: [
                 Expanded(
                     child: Center(
-                      child: Text("Calorías: ${info_receta.calories!.toStringAsFixed(0)}",
+                      child: Text("${info_receta.calories!.toStringAsFixed(0)} Kcal",
                           style: const TextStyle(
                               fontSize: 16
                           )),))
@@ -111,7 +107,7 @@ class PestanasDietasAlergias extends StatelessWidget{
   final List<String> dietas;
   final List<String> alergias;
 
-  PestanasDietasAlergias(this.dietas, this.alergias);
+  PestanasDietasAlergias(this.dietas, this.alergias, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +173,7 @@ class PestanasDietasAlergias extends StatelessWidget{
 class PestanaIngredientes extends StatelessWidget{
   final List<String> ingredientes;
 
-  PestanaIngredientes(this.ingredientes);
+  PestanaIngredientes(this.ingredientes, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -227,10 +223,148 @@ class PestanaIngredientes extends StatelessWidget{
   }
 }
 
-class LayoutDetalleHorizontal extends StatelessWidget{
+class TodasPestanas extends StatelessWidget{
+  final List<String> ingredientes;
+  final List<String> dietas;
+  final List<String> alergias;
+
+  TodasPestanas(this.ingredientes, this.dietas, this.alergias, {super.key});
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+              flex: 84,
+              child: Row(
+                children: [
+                  Expanded(
+                      flex: 48,
+                      child: Material(
+                        child: PestanaIngredientes(ingredientes),
+                      )
+                  ),
+                  const VerticalDivider(thickness: 2,
+                    color: Colors.green,),
+                  Expanded(
+                      flex: 48,
+                      child: Material(
+                        child: PestanasDietasAlergias(dietas, alergias),
+                      )
+                  ),
+                ],
+              )
+          ),
+          const Spacer(flex: 3,),
+          Expanded(    // Boton volver
+              flex: 10,
+              child: Column(
+                children: [
+                  Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Volver"),
+                      ),),
+                ],
+              )),
+          const Spacer(flex: 3,)  // Espacio inferior botón
+        ],
+      ),
+    );
+  }
+}
+
+class LayoutDetalleHorizontal extends StatelessWidget{
+  final Recipe info_receta;
+
+  LayoutDetalleHorizontal(this.info_receta, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          flex: 87,  // Parte principal
+          child: Row(
+            children: [
+              Expanded(  // Mitad izquierda-------------------------------------
+                flex: 50,
+                child: Column(
+                  children: [
+                    Expanded(   // Imagen Edamam
+                        flex: 25,
+                        child: Image.asset('assets/images/Edamam_logo_full_RGB.png',
+                            scale: 6
+                        ),),
+                    Expanded(   // Nombre Receta
+                        flex: 25,
+                        child: Text(info_receta.label!,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 27
+                          ),),),
+                    Expanded(
+                        flex: 12,  // Ingredientes
+                        child: Text("${info_receta.ingredients?.length} Ingredientes")),
+                    Expanded(
+                        flex: 12,  // Calorías
+                        child: Text("${info_receta.calories!.toStringAsFixed(0)} Kcal")),
+                    const Spacer(flex: 10,),
+                    Expanded(    // Botón + info
+                        flex: 12,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.push(
+                              context,      // Navegamos á próxima pantalla
+                              MaterialPageRoute(
+                                  builder: (context) => TodasPestanas(info_receta.ingredients!, info_receta.dietLabels!, info_receta.healthLabels!)
+                              )
+                          ),
+                          child: const Text("+ Info",),
+                        )),
+                    const Spacer(flex: 3,)
+                  ],
+                ),
+              ),
+              const VerticalDivider(thickness: 2,
+                color: Colors.green,
+              indent: 25, /* Padding superior*/),
+              Expanded(    // Mitad derecha-------------------------------------
+                flex: 50,
+                child: Column(
+                  children: [
+                    const Spacer(flex: 10,),   // Espacio superior imagen
+                    Expanded(
+                        flex: 87,
+                        child: OctoImage(image: NetworkImage(info_receta.image!),  // Imagen
+                          progressIndicatorBuilder: OctoProgressIndicator.circularProgressIndicator(),   // Circulo de progreso
+                          errorBuilder: OctoError.icon(color: Colors.green,),    // Icono si no se obtuvo la imagen
+                        ),),
+                    const Spacer(flex: 3,)    // Espacio inferior imagen
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(   // Parte botón volver---------------------------------------
+          flex: 10,
+          child: Row(
+            children: [
+              const Spacer(flex: 75,),
+              Expanded(
+                flex: 15,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Volver"),
+                )
+              ),
+              const Spacer(flex: 10,),
+            ],
+          )
+        ),
+        const Spacer(flex: 3,)  // Espacio inferior botón volver
+      ],
+    );
   }
 }
