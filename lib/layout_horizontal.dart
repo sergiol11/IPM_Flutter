@@ -7,7 +7,7 @@ import 'package:practica/providers.dart';
 import 'package:provider/provider.dart';
 
 class LayoutHorizontal extends StatelessWidget{
-  
+
   const LayoutHorizontal({super.key});
 
   @override
@@ -17,12 +17,12 @@ class LayoutHorizontal extends StatelessWidget{
       body: Row(   // Tomamos el diseño como horizontal
         children: const [
           Expanded(
-            flex: 50,   // 45%
-            child: Botones("Horizontal")
+              flex: 50,   // 45%
+              child: Botones("Horizontal")
           ),
           Expanded(
-            flex: 50,    // 55%
-            child: LayoutRecetas("Horizontal")
+              flex: 50,    // 55%
+              child: LayoutRecetas("Horizontal")
           )
         ],
       ),
@@ -51,18 +51,18 @@ class BotonDietaAlergiaHorizontal extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      onPressed: () => Navigator.push(
-        context,      // Navegamos á próxima pantalla
-        MaterialPageRoute(
-          builder: (context) => const Selectores()
-        )
-      ),
-      icon: const Icon(Icons.arrow_forward_ios),
-      label: const Text("Dietas y Alergias",
-        style: TextStyle(
-          fontSize: 16
+        onPressed: () => Navigator.push(
+            context,      // Navegamos á próxima pantalla
+            MaterialPageRoute(
+                builder: (context) => const Selectores()
+            )
         ),
-      )
+        icon: const Icon(Icons.arrow_forward_ios),
+        label: const Text("Dietas y Alergias",
+          style: TextStyle(
+              fontSize: 16
+          ),
+        )
     );
   }
 }
@@ -77,30 +77,47 @@ class Selectores extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    MultiSplitView multiSplitView = MultiSplitView(
+    /*MultiSplitView multiSplitView = MultiSplitView(
         children: const [
-          SelectorPage("Dietas"), 
+          SelectorPage("Dietas"),
           SelectorPage("Alergias")
         ]
     );
 
 
     MultiSplitViewTheme theme = MultiSplitViewTheme(
-      data: MultiSplitViewThemeData(
-        dividerPainter: DividerPainters.dashed(
-            color: Colors.deepOrange,
-            highlightedColor: Colors.black
-        )
-      ),
-      child: multiSplitView
-    );
+        data: MultiSplitViewThemeData(
+            dividerPainter: DividerPainters.dashed(
+                color: Colors.deepOrange,
+                highlightedColor: Colors.black
+            )
+        ),
+        child: multiSplitView
+    );*/
 
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
       appBar: AppBar(
         title: const Text("Dietas y Alergias"),
       ),
-      body: theme,
+      body: Row(
+        children: const [
+          Expanded(
+              flex: 50,
+              child: SelectorPage("Dietas")),
+          VerticalDivider(
+            width: 10,
+            thickness: 2,
+            indent: 0,
+            endIndent: 0,
+            color: Colors.green,
+          ),
+          Expanded(
+              flex: 50,
+              child: SelectorPage("Alergias")),
+        ],
+      ),
     );
   }
 
@@ -120,10 +137,12 @@ class _SelectorPageState extends State<SelectorPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
       body: SafeArea(
         child: FilterListWidget<Opcion>(
           themeData: FilterListThemeData(context),
           //allButtonText: "Todos",
+          hideSearchField: true,  // Así en horizontal non temos problema
           resetButtonText: "Borrar",
           applyButtonText: "Guardar",
           controlButtons: const [/*ControlButtonType.All,*/ ControlButtonType.Reset],  // Quitamos botón todos de opcions de lista
@@ -134,9 +153,9 @@ class _SelectorPageState extends State<SelectorPage>{
               : context.read<OpcionesSeleccionadas>().opcionesAlergias,    // Modificamos en el provider la lista de opciones correspondiente
           onApplyButtonClick: (list) {
             setState(() {
-                widget.dietaOalergia == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
-                    : context.read<OpcionesSeleccionadas>().set_opciones_alergias(List.from(list!));  // Actualizamos la lista de opciones correspondiente
-              }
+              widget.dietaOalergia == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
+                  : context.read<OpcionesSeleccionadas>().set_opciones_alergias(List.from(list!));  // Actualizamos la lista de opciones correspondiente
+            }
             );
           },
           choiceChipLabel: (item) {

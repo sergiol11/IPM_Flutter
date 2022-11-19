@@ -1,7 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:practica/app.dart';
+import 'package:practica/edamam.dart';
 
+class Recetas with ChangeNotifier, DiagnosticableTreeMixin {
+  late Future<RecipeBlock?> recetas = search_recipes("&q=salad");
+
+  void buscarRecetas(String query) {
+    recetas = search_recipes(query);
+    notifyListeners();
+  }
+}
 
 
 class Ingredientes with ChangeNotifier, DiagnosticableTreeMixin {
@@ -72,20 +81,5 @@ class OpcionesSeleccionadas with ChangeNotifier, DiagnosticableTreeMixin {
   void set_opciones_alergias(List<Opcion> opciones){
     _opcionesAlergias.clear();
     _opcionesAlergias = opciones;
-  }
-}
-
-class InfoEdamamRecetas with ChangeNotifier, DiagnosticableTreeMixin {
-  late Widget info;
-  String _busqueda = "";
-
-  void set_info(Widget widget){
-    info = widget;
-  }
-
-  String get busqueda => _busqueda;
-
-  void set_busqueda(String new_search){
-    _busqueda = new_search;
   }
 }

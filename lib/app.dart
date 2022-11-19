@@ -2,11 +2,13 @@ import 'dart:core';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:filter_list/filter_list.dart';
+import 'package:practica/detalle_receta.dart';
 import 'package:practica/providers.dart';
 import 'edamam.dart';
 import 'layout_horizontal.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
+import 'package:octo_image/octo_image.dart';
 
 const int breakPoint = 600;
 
@@ -16,22 +18,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => Ingredientes()),
-        ChangeNotifierProvider(create: (_) => NombreReceta()),
-        ChangeNotifierProvider(create: (_) => MinMaxCalorias()),
-        ChangeNotifierProvider(create: (_) => OpcionesSeleccionadas()),
-        ChangeNotifierProvider(create: (_) => InfoEdamamRecetas())
-      ],
-      child: GestureDetector(   // Tocar pantalla e quitar foco do widget no que esté
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-        child: MaterialApp(
-          theme: ThemeData(
-            primarySwatch: Colors.green,
-          ),
-          home: const MasterDetail(title: 'Edamam',)
+        providers: [
+          ChangeNotifierProvider(create: (_) => Ingredientes()),
+          ChangeNotifierProvider(create: (_) => NombreReceta()),
+          ChangeNotifierProvider(create: (_) => MinMaxCalorias()),
+          ChangeNotifierProvider(create: (_) => OpcionesSeleccionadas()),
+          ChangeNotifierProvider(create: (_) => Recetas()),
+        ],
+        child: GestureDetector(   // Tocar pantalla e quitar foco do widget no que esté
+            onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+            child: MaterialApp(
+                theme: ThemeData(
+                  primarySwatch: Colors.green,
+                ),
+                home: const MasterDetail(title: 'Edamam',)
+            )
         )
-      )
     );
   }
 }
@@ -45,13 +47,13 @@ class MasterDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        bool chooseMasterAndDetail = (
-            constraints.smallest.longestSide > breakPoint &&
-                MediaQuery.of(context).orientation == Orientation.landscape
-        );
-        return chooseMasterAndDetail ? LayoutHorizontal() : const LayoutVertical();  // Diseño horizontal o vertical
-      }
+        builder: (BuildContext context, BoxConstraints constraints) {
+          bool chooseMasterAndDetail = (
+              constraints.smallest.longestSide > breakPoint &&
+                  MediaQuery.of(context).orientation == Orientation.landscape
+          );
+          return chooseMasterAndDetail ? LayoutHorizontal() : const LayoutVertical();  // Diseño horizontal o vertical
+        }
     );
   }
 }
@@ -99,11 +101,11 @@ class _Botones extends State<Botones>{
         body: Column(
           children: [
             Expanded(
-              flex: 8,
-              child:
-              Image.asset('assets/images/Edamam_logo_full_RGB.png',
-                  scale: 6
-              )
+                flex: 8,
+                child:
+                Image.asset('assets/images/Edamam_logo_full_RGB.png',
+                    scale: 6
+                )
             ),
             Expanded(
               flex: 8,
@@ -111,8 +113,8 @@ class _Botones extends State<Botones>{
                 children: const [
                   Spacer(flex: 15),
                   Expanded(
-                    flex: 70,      // %
-                    child: BuscadorNombreReceta()
+                      flex: 70,      // %
+                      child: BuscadorNombreReceta()
                   ),
                   Spacer(flex: 15),
                 ],
@@ -120,42 +122,42 @@ class _Botones extends State<Botones>{
             ),
             widget.orientacion == "Vertical" ?    // 2 botones para Dietas y Alergias en vertical
             Expanded(
-              flex: 8,
-              child: Row(   // Botóns Dietas e Alergias
-                children: const [
-                  Spacer(flex: 7),
-                  Expanded(
-                    flex: 35,
-                    child: Selector(opcion: "Dietas"),
-                  ),
-                  Spacer(flex: 15),
-                  Expanded(
-                    flex: 35,
-                    child: Selector(opcion: "Alergias"),
-                  ),
-                  Spacer(flex: 7),
-                ],
-              )
+                flex: 8,
+                child: Row(   // Botóns Dietas e Alergias
+                  children: const [
+                    Spacer(flex: 7),
+                    Expanded(
+                      flex: 35,
+                      child: Selector(opcion: "Dietas"),
+                    ),
+                    Spacer(flex: 15),
+                    Expanded(
+                      flex: 35,
+                      child: Selector(opcion: "Alergias"),
+                    ),
+                    Spacer(flex: 7),
+                  ],
+                )
             )
                 :   // 1 solo botón para dietas y alergias en horizontal
             Expanded(
-              flex: 8,
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 15,
-                    child: Container()
-                  ),
-                  const Expanded(
-                    flex: 70,
-                    child: SelectorHorizontal()
-                  ),
-                  Expanded(
-                    flex: 15,
-                    child: Container()
-                  )
-                ],
-              )
+                flex: 8,
+                child: Row(
+                  children: [
+                    Expanded(
+                        flex: 15,
+                        child: Container()
+                    ),
+                    const Expanded(
+                        flex: 70,
+                        child: SelectorHorizontal()
+                    ),
+                    Expanded(
+                        flex: 15,
+                        child: Container()
+                    )
+                  ],
+                )
             ),
             Expanded(
               flex: 8,
@@ -163,21 +165,21 @@ class _Botones extends State<Botones>{
                 children: const [
                   Spacer(flex: 5),
                   Expanded(
-                    flex: 23,
-                    child: Text("Calorías:",
-                      style: TextStyle(
-                        fontSize: 22
-                      ),
-                    )
+                      flex: 23,
+                      child: Text("Calorías:",
+                        style: TextStyle(
+                            fontSize: 22
+                        ),
+                      )
                   ),
                   Expanded(
-                    flex: 31,
-                    child: Calorias("Min",)
+                      flex: 31,
+                      child: Calorias("Min",)
                   ),
                   Spacer(flex: 3),
                   Expanded(
-                    flex: 31,
-                    child: Calorias("Max",)
+                      flex: 31,
+                      child: Calorias("Max",)
                   ),
                   Spacer(flex: 6)
                 ],
@@ -191,16 +193,13 @@ class _Botones extends State<Botones>{
                   IgnorePointer(
                     ignoring: !visible,
                     child: AnimatedOpacity(
-                      opacity: visible ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 200),
-                      child: const Expanded(
-                          flex: 30,
-                          child: Text("Ingredientes:",
-                            style: TextStyle(
-                                fontSize: 22
-                            ),
-                          )
-                      ),
+                        opacity: visible ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: const Text("Ingredientes:",
+                          style: TextStyle(
+                              fontSize: 22
+                          ),
+                        )
                     ),
                   ),
                   const Spacer(flex: 3),
@@ -209,9 +208,9 @@ class _Botones extends State<Botones>{
                     child: IgnorePointer(
                       ignoring: !visible,
                       child: AnimatedOpacity(
-                        opacity: visible ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: const BotonContadorIngredientes("Remove")
+                          opacity: visible ? 1.0 : 0.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: const BotonContadorIngredientes("Remove")
                       ),
                     ),
                   ),
@@ -221,16 +220,16 @@ class _Botones extends State<Botones>{
                     child: IgnorePointer(
                       ignoring: !visible,
                       child: AnimatedOpacity(
-                        opacity: visible ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 200),
-                         child: Center(
-                          child: Text(
-                            '${context.watch<Ingredientes>().ingredientes}',
-                            style: const TextStyle(
-                                fontSize: 20
-                            )
+                          opacity: visible ? 1.0 : 0.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: Center(
+                              child: Text(
+                                  '${context.watch<Ingredientes>().ingredientes}',
+                                  style: const TextStyle(
+                                      fontSize: 20
+                                  )
+                              )
                           )
-                        )
                       ),
                     ),
                   ),
@@ -240,26 +239,42 @@ class _Botones extends State<Botones>{
                     child: IgnorePointer(
                       ignoring: !visible,
                       child: AnimatedOpacity(
-                        opacity: visible ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: const BotonContadorIngredientes("Add")
+                          opacity: visible ? 1.0 : 0.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: const BotonContadorIngredientes("Add")
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 55,
-                    width: 100,
-                    child: ConfiguradorIngredientes(update)
+                      height: 55,
+                      width: 100,
+                      child: ConfiguradorIngredientes(update)
                   ),
                   const Spacer(flex: 6),
                 ],
               ),
             ),
+            Expanded(
+              flex: 8,
+              child: Row(
+                children: [
+                  const Spacer(flex: 65),
+                  Expanded(
+                      flex: 25,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: BotonBuscar(),
+                      )
+                  ),
+                  const Spacer(flex: 5),
+                ],
+              )
+            ),
             //Spacer(flex: orientacion == "Vertical" ? 50 : 1)
             widget.orientacion == "Vertical" ?
             const Expanded(
-              flex: 50,
-              child: LayoutRecetas("Vertical")
+                flex: 50,
+                child: LayoutRecetas("Vertical")
             )
                 : const Spacer(flex: 1,)
           ],
@@ -271,7 +286,7 @@ class _Botones extends State<Botones>{
 
 class AvisoError extends StatelessWidget{
   final String mensajeError;
-  
+
   const AvisoError(this.mensajeError, {super.key});
 
   @override
@@ -279,7 +294,7 @@ class AvisoError extends StatelessWidget{
     return AlertDialog(
       title: const Icon(CupertinoIcons.exclamationmark_bubble,
         color: Colors.green,
-      size: 50,),
+        size: 50,),
       content: Text(mensajeError, textAlign: TextAlign.center,),
       actions: <Widget>[
         TextButton(
@@ -292,7 +307,6 @@ class AvisoError extends StatelessWidget{
 }
 
 ////////////////////////// LIST VIEW  ///////////////////////////////////////////
-
 class LayoutRecetas extends StatelessWidget {
   final String orientacion;
 
@@ -307,8 +321,8 @@ class LayoutRecetas extends StatelessWidget {
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           // Padding para que non se vaia a curva!
-            padding: orientacion == "Vertical" ? const EdgeInsets.only(top: 10) : const EdgeInsets.only(left: 10,),   // AQUI E ONDE POÑERMOS INFO DE COUSA DE ABAIXO!!!
-            decoration: orientacion == "Vertical" ? 
+            padding: orientacion == "Vertical" ? const EdgeInsets.only(top: 10) : const EdgeInsets.only(left: 10, top: 10),  // PADDING DO BOTÓN BUSCAR + PARA MANTER A CURVA VERDE!
+            decoration: orientacion == "Vertical" ?
             const BoxDecoration(  // Borde curvo + color de borde negro
               borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
               color: Colors.white,
@@ -330,7 +344,7 @@ class LayoutRecetas extends StatelessWidget {
                 ),
               ],
             ),
-            child: const ListaRecetas("Hola")
+            child: ListaRecetas(orientacion)
         );
       },
     );
@@ -338,9 +352,9 @@ class LayoutRecetas extends StatelessWidget {
 }
 
 class ListaRecetas extends StatefulWidget{
-  final String title;
+  final String orientacion;
 
-  const ListaRecetas(this.title, {super.key});
+  ListaRecetas(this.orientacion, {super.key});
 
   @override
   _ListaRecetas createState() => _ListaRecetas();
@@ -356,19 +370,17 @@ class _ListaRecetas extends State<ListaRecetas>{
   }
 
   String _parser(String? palabra){
-    return palabra ?? "Error";   // Cambiar por outro mensaje
+    return palabra ?? "Error";   // Cambiar por outro mensaje!!!!!!!!!!!!!!!!!!!!!!
   }
 
-  update(String query){
-    setState(() {
-      recetas = search_recipes(query);
-    });
+  Recipe _parser_recipe(Recipe? receta){
+    return receta ?? Recipe();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<RecipeBlock?> (
-      future: recetas,
+      future: context.watch<Recetas>().recetas,
       builder: (BuildContext context, AsyncSnapshot<RecipeBlock?> snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -393,31 +405,22 @@ class _ListaRecetas extends State<ListaRecetas>{
         }
         else {
           return Scaffold(
+            resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
             body: Column(
               children: [
                 Expanded(
-                  flex: 10,
-                  child: Row(
-                    children: [
-                      const Spacer(flex: 30),
-                      Expanded(
-                          flex: 40,
-                          child: BotonBuscar(update)
-                      ),
-                      const Spacer(flex: 30),
-                    ],
-                  )
-                ),
-                Expanded(
-                  flex: 90,
+                  flex: 100,
                   child: ListView.separated(
-                      itemCount: snapshot.data?.recipes?.length.toInt() ?? 0,
-                      itemBuilder: (context, index) {
-                        return ListTile(
+                    itemCount: snapshot.data?.recipes?.length.toInt() ?? 0,  // Asi controlamos cando nn devolve info edadmam pintamos lista vacia
+                    itemBuilder: (context, index) {
+                      return ListTile(    // ANTES AQUÍ COMPROBAR SE PARA ES ITEM TEMOS INFO DA RECETA!!! Senn devolver ListTIle con error!
                           leading: CircleAvatar(
                             backgroundColor: Colors.white,
-                            radius: 25,  // Tamaño imagen
-                            child: ImageBuilder(snapshot.data?.recipes?[index].image),
+                            radius: 27,  // Tamaño imagen
+                            child: OctoImage(image: NetworkImage(_parser(snapshot.data?.recipes?[index].image)),  // Imagen
+                              progressIndicatorBuilder: OctoProgressIndicator.circularProgressIndicator(),   // Circulo de progreso
+                              errorBuilder: OctoError.icon(color: Colors.green,),    // Icono si no se obtuvo la imagen
+                            ),
                           ),
                           title: Text(_parser(snapshot.data?.recipes?[index].label)),
                           subtitle: Text("Calorias: ${_parser(snapshot.data?.recipes?[index].calories?.toStringAsFixed(0))}     "
@@ -426,14 +429,20 @@ class _ListaRecetas extends State<ListaRecetas>{
                             height: 35,
                             width: 35,
                             child: FloatingActionButton(
-                              onPressed: () {},
+                              heroTag: "$index",
+                              onPressed: () => Navigator.push(
+                                  context,      // Navegamos á próxima pantalla
+                                  MaterialPageRoute(
+                                      builder: (context) => LayoutDetalle(widget.orientacion, _parser_recipe(snapshot.data?.recipes?[index])) // Devolvemos a receta ou unha receta vacía se nn temos info
+                                  )
+                              ),
                               backgroundColor: Colors.white,
                               child: const Icon(Icons.arrow_forward_ios,
                                 color: Colors.green,),
                             ),
                           )
-                        );
-                      },
+                      );
+                    },
                     separatorBuilder: (BuildContext context, int index) {  // Separador de elementos
                       return const Divider(
                         color: Colors.green,
@@ -453,7 +462,7 @@ class _ListaRecetas extends State<ListaRecetas>{
   }
 }
 
-class ImageBuilder extends StatefulWidget{
+/*class ImageBuilder extends StatefulWidget{
   final String? urlImagen;
 
   const ImageBuilder(this.urlImagen, {super.key});
@@ -469,7 +478,7 @@ class _ImageBuilderState extends State<ImageBuilder>{
     super.initState();// Cast
   }
 
-  Future<Image> getImagen(String? url) async {
+  /*Future<Image> getImagen(String? url) async {
     return widget.urlImagen != null
         ?
     Image.network(
@@ -489,8 +498,8 @@ class _ImageBuilderState extends State<ImageBuilder>{
           child: Center(
             child: CircularProgressIndicator(
               value: loadingProgress.expectedTotalBytes != null
-                ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                : null,
+                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                  : null,
             ),
           ),
         );
@@ -502,6 +511,10 @@ class _ImageBuilderState extends State<ImageBuilder>{
       ),
     )
         : Image.asset('assets/images/Edamam_logo_full_RGB.png', scale: 6);
+  }*/
+
+  Future<Image> getImagen(String? url) async {
+    return url != null ? Image.network(url) : Image.network(url!);
   }
 
   @override
@@ -509,20 +522,36 @@ class _ImageBuilderState extends State<ImageBuilder>{
     return FutureBuilder<Image> (
       future: getImagen(widget.urlImagen),
       builder: (BuildContext context, AsyncSnapshot<Image> snapshot) {
-        return InkWell(
-          child: Center(
+        if(snapshot.hasData){    // CASO BON
+          return InkWell(
             child: snapshot.data,
-          ),
-        );
+          );
+        } else if(snapshot.hasError){   // CASO ERROR!
+          return Center(
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Image.asset('images/snoopy-penalty-box.gif'),
+                  const Text('There was a network error'),
+                  ElevatedButton(
+                    child: const Text('Try again'),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+          );
+        } else {     // CALQUERA OUTRO CASO
+          return const Center(child: CircularProgressIndicator(),);
+        }
       },
     );
   }
-}
+}*/
 
 
 
 //////////////////////// LIST VIEW /////////////////////////////////////////////
-
 class CommonMethods {
   String prepareQuery(BuildContext context) {
     String nombreReceta = context.read<NombreReceta>().nombre_receta;
@@ -568,9 +597,6 @@ class CommonMethods {
 }
 
 class BotonBuscar extends StatelessWidget{
-  Function update;
-
-  BotonBuscar(this.update, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -582,7 +608,7 @@ class BotonBuscar extends StatelessWidget{
 
         if(query.isNotEmpty){
           print(query);
-          update(query);
+          Provider.of<Recetas>(context, listen: false).buscarRecetas(query);
         }
       },
       isReverse: true,
@@ -612,18 +638,19 @@ class _BotonContadorIngredientesState extends State<BotonContadorIngredientes>{
   Widget build(BuildContext context) {
     return FloatingActionButton(
       // Incrementamos o decrementamos el contador según el botón y escogemos el icono
-      onPressed: () => {
-        if(widget.accion == "Add"){    // Incrementar
-          context.read<Ingredientes>().increment()
-        }else{    // Decrementar
-          if(context.read<Ingredientes>().ingredientes == 2){
-            showDialog(context: context, builder: (BuildContext context) => const AvisoError("El mínimo de ingredientes son 2")),
-          }else{
-            context.read<Ingredientes>().decrement()
+        heroTag: widget.accion == "Add" ? "Uno" : "Dos",
+        onPressed: () => {
+          if(widget.accion == "Add"){    // Incrementar
+            context.read<Ingredientes>().increment()
+          }else{    // Decrementar
+            if(context.read<Ingredientes>().ingredientes == 2){
+              showDialog(context: context, builder: (BuildContext context) => const AvisoError("El mínimo de ingredientes son 2")),
+            }else{
+              context.read<Ingredientes>().decrement()
+            }
           }
-        }
-      },
-      child: Icon(widget.accion == "Add" ? Icons.add : Icons.remove));
+        },
+        child: Icon(widget.accion == "Add" ? Icons.add : Icons.remove));
   }
 }
 
@@ -654,34 +681,34 @@ class _CaloriasState extends State<Calorias> {     // É sin estdo???
     fieldText.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      focusNode: myFocusNode,
-      controller: fieldText,
-      restorationId: 'name_field',
-      textInputAction: TextInputAction.next,
-      textCapitalization: TextCapitalization.words,
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 3.0),  // Facer menos alto o widget
-        filled: true,
-        labelText: widget.limite,
-      ),
-      onTap: () => myFocusNode.requestFocus(),
-      // Gardamos cada cambio que ocurra por se usuario non lle da a OK no teclado cando escriba!
-      onChanged: (text) => {
-        if(regex.hasMatch(text)){  // Actualizamos provider si se cumplen las condiciones
-          widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min(text)
-              : context.read<MinMaxCalorias>().set_max(text),
-        }else{     // Lanzamos aviso se non se cumplen condicións
-          showDialog(context: context, builder: (BuildContext context) => const AvisoError("Solo se permiten dígitos")),
-          widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min("")
-              : context.read<MinMaxCalorias>().set_max(""), // Actualizamos calorias a vacío
-          fieldText.clear(),    // Eliminamos texto del widget
-          myFocusNode.unfocus(),    // Quitamos foco del campo
+        focusNode: myFocusNode,
+        controller: fieldText,
+        restorationId: 'name_field',
+        textInputAction: TextInputAction.next,
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 3.0),  // Facer menos alto o widget
+          filled: true,
+          labelText: widget.limite,
+        ),
+        onTap: () => myFocusNode.requestFocus(),
+        // Gardamos cada cambio que ocurra por se usuario non lle da a OK no teclado cando escriba!
+        onChanged: (text) => {
+          if(regex.hasMatch(text)){  // Actualizamos provider si se cumplen las condiciones
+            widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min(text)
+                : context.read<MinMaxCalorias>().set_max(text),
+          }else{     // Lanzamos aviso se non se cumplen condicións
+            showDialog(context: context, builder: (BuildContext context) => const AvisoError("Solo se permiten dígitos")),
+            widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min("")
+                : context.read<MinMaxCalorias>().set_max(""), // Actualizamos calorias a vacío
+            fieldText.clear(),    // Eliminamos texto del widget
+            myFocusNode.unfocus(),    // Quitamos foco del campo
+          }
         }
-      }
     );
   }
 }
@@ -718,29 +745,29 @@ class _BuscadorNombreRecetaState extends State<BuscadorNombreReceta> {    // EST
   Widget build(BuildContext context) {
 
     return TextFormField(
-      focusNode: myFocusNode,
-      textInputAction: TextInputAction.next,
-      textCapitalization: TextCapitalization.words,
-      initialValue: "Salad",
-      decoration: const InputDecoration(
-        filled: true,
-        icon: Icon(Icons.search),
-        labelText: "Receta",
-        hintText: "Buscar"
-      ),
-      onTap: () => myFocusNode.requestFocus(), // Para doble clic hai que usar Gesture!
+        focusNode: myFocusNode,
+        textInputAction: TextInputAction.next,
+        textCapitalization: TextCapitalization.words,
+        initialValue: "Salad",
+        decoration: const InputDecoration(
+            filled: true,
+            icon: Icon(Icons.search),
+            labelText: "Receta",
+            hintText: "Buscar"
+        ),
+        onTap: () => myFocusNode.requestFocus(), // Para doble clic hai que usar Gesture!
 
-      // Gardamos o nome da receta introducido cada vez que hai un cambio por se usuario non lle dá a OK no teclado
-      onChanged: (text) => {
-        if(regex.hasMatch(text)){  // Actualizamos provider si se cumplen las condiciones do texto
-          context.read<NombreReceta>().set_nombre_receta(text),
-        }else{     // Lanzamos aviso se non se cumplen condicións
-          showDialog(context: context, builder: (BuildContext context) => const AvisoError("Solo se permiten letras y espacios")),
-          context.read<NombreReceta>().set_nombre_receta(""),   // Actualizamos nombre a vacio
-          fieldText.clear(),    // Eliminamos texto del widget
-          myFocusNode.unfocus()    // Quitamos foco del campo
+        // Gardamos o nome da receta introducido cada vez que hai un cambio por se usuario non lle dá a OK no teclado
+        onChanged: (text) => {
+          if(regex.hasMatch(text)){  // Actualizamos provider si se cumplen las condiciones do texto
+            context.read<NombreReceta>().set_nombre_receta(text),
+          }else{     // Lanzamos aviso se non se cumplen condicións
+            showDialog(context: context, builder: (BuildContext context) => const AvisoError("Solo se permiten letras y espacios")),
+            context.read<NombreReceta>().set_nombre_receta(""),   // Actualizamos nombre a vacio
+            fieldText.clear(),    // Eliminamos texto del widget
+            myFocusNode.unfocus()    // Quitamos foco del campo
+          }
         }
-      }
     );
   }
 }
@@ -749,7 +776,7 @@ class Selector extends StatefulWidget {
   final String opcion;
 
   const Selector({super.key, required this.opcion});
-  
+
   @override
   State<Selector> createState() => _SelectorState();
 }
@@ -768,34 +795,35 @@ class _SelectorState extends State<Selector> {
 
   Future<void> _openFilterDialogOpciones() async {
     await FilterListDialog.display<Opcion>(
-      context,
-      resetButtonText: "Borrar",
-      applyButtonText: "Guardar",
-      hideSelectedTextCount: false,   //Poñer a false se queremos ver cantos levamos seleccionados
-      themeData: FilterListThemeData(context),
-      headlineText: 'Selecciona  ${widget.opcion}', // Poñer o qeu buscamos
-      height: 500,     // Esto creo que é o tamaño do Dialog asi que tocar se eso
-      listData: lista,    // Lista para crear os iconos
-      selectedListData: widget.opcion == "Dietas" ? context.read<OpcionesSeleccionadas>().opcionesDietas
-          : context.read<OpcionesSeleccionadas>().opcionesAlergias,    // Modificamos en el provider la lista de opciones correspondiente
-      choiceChipLabel: (item) => item!.opcion,
-      validateSelectedItem: (list, val) => list!.contains(val),
-      controlButtons: [ControlButtonType.Reset],  // Quitamos botón todos de opcions de lista
-      onItemSearch: (opt, query) {
-        return opt.opcion.toLowerCase().contains(query.toLowerCase());
-      },
+        context,
+        resetButtonText: "Borrar",
+        applyButtonText: "Guardar",
+        hideSelectedTextCount: false,   //Poñer a false se queremos ver cantos levamos seleccionados
+        hideSearchField: true,  // Así en horizontal non temos problema
+        themeData: FilterListThemeData(context),
+        headlineText: 'Selecciona  ${widget.opcion}', // Poñer o qeu buscamos
+        height: 500,     // Esto creo que é o tamaño do Dialog asi que tocar se eso
+        listData: lista,    // Lista para crear os iconos
+        selectedListData: widget.opcion == "Dietas" ? context.read<OpcionesSeleccionadas>().opcionesDietas
+            : context.read<OpcionesSeleccionadas>().opcionesAlergias,    // Modificamos en el provider la lista de opciones correspondiente
+        choiceChipLabel: (item) => item!.opcion,
+        validateSelectedItem: (list, val) => list!.contains(val),
+        controlButtons: [ControlButtonType.Reset],  // Quitamos botón todos de opcions de lista
+        onItemSearch: (opt, query) {
+          return opt.opcion.toLowerCase().contains(query.toLowerCase());
+        },
 
-      onApplyButtonClick: (list) {
-        setState(() {
-          widget.opcion == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
-              : context.read<OpcionesSeleccionadas>().set_opciones_alergias(List.from(list!));  // Actualizamos la lista de opciones correspondiente
+        onApplyButtonClick: (list) {
+          setState(() {
+            widget.opcion == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
+                : context.read<OpcionesSeleccionadas>().set_opciones_alergias(List.from(list!));  // Actualizamos la lista de opciones correspondiente
           }
-        );
-        Navigator.pop(context);
-      }
+          );
+          Navigator.pop(context);
+        }
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return BotonDietaAlergia(title: widget.opcion, funcion: _openFilterDialogOpciones);
@@ -806,7 +834,7 @@ class _SelectorState extends State<Selector> {
 class BotonDietaAlergia extends StatelessWidget{
   final String title;
   final Future<void> Function() funcion;
-  
+
   const BotonDietaAlergia({super.key, required this.title, required this.funcion});
 
   @override
@@ -815,11 +843,11 @@ class BotonDietaAlergia extends StatelessWidget{
         onPressed: funcion,
         icon: const Icon(Icons.arrow_forward_ios),
         label: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16
+            title,
+            style: const TextStyle(
+                fontSize: 16
+            )
         )
-      )
     );
   }
 }
@@ -828,7 +856,7 @@ class Opcion {
   final String _opcion;
 
   Opcion(this._opcion);
-  
+
   String get opcion => _opcion;
 }
 
@@ -903,14 +931,14 @@ class _ConfiguradorIngredientesState extends State<ConfiguradorIngredientes> {
   @override
   Widget build(BuildContext context) {
     return SwitchListTile(
-      value: confIngredientes,
-      onChanged: (bool value) {
-        setState(() {
-          confIngredientes = value;
-          context.read<Ingredientes>().cambiarValor(value);
-          widget.update(value);
-        });
-      }
+        value: confIngredientes,
+        onChanged: (bool value) {
+          setState(() {
+            confIngredientes = value;
+            context.read<Ingredientes>().cambiarValor(value);
+            widget.update(value);
+          });
+        }
     );
   }
 }

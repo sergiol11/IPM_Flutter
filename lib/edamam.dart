@@ -196,11 +196,11 @@ Future<RecipeBlock?> search_recipes(String query) async {
 
 void main(List<String> arguments) async {
 
-    try {
-      var block = await search_recipes("&q=salad&diet=balanced&health=DASH&calories=2000-3000");
-      print(block);
-    } catch (exception) {
-      print(exception);
-    }
+  try {
+    var block = await search_recipes("&q=salad&diet=balanced&health=DASH&calories=2000-3000");
+    print(block);
+  } catch (exception) {
+    print(exception);
+  }
 
 }
