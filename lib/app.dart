@@ -386,7 +386,29 @@ class _ListaRecetas extends State<ListaRecetas>{
               children: [
                 Expanded(
                   flex: 100,
-                  child: ListView.separated(
+                  child:
+                  snapshot.data?.recipes?.length == null ?
+                  Column(
+                   children: const [
+                     Spacer(flex: 15),
+                     Center(
+                         child: Icon(
+                             Icons.sentiment_very_dissatisfied, size: 100
+                         )
+                     ),
+                     Center(
+                         child: Text(
+                           "No se han encontrado recetas",
+                           style: TextStyle(
+                               fontSize: 25
+                           ),
+                         )
+                     ),
+                     Spacer(flex: 25)
+                   ],
+                  )
+                  :
+                  ListView.separated(
                     itemCount: snapshot.data?.recipes?.length.toInt() ?? 0,  // Asi controlamos cando nn devolve info edadmam pintamos lista vacia
                     itemBuilder: (context, index) {
                       return ListTile(  // ANTES AQUÍ COMPROBAR SE PARA ES ITEM TEMOS INFO DA RECETA!!! Senn devolver ListTIle con error!
