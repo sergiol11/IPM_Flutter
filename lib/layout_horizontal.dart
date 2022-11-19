@@ -77,7 +77,7 @@ class Selectores extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    /*MultiSplitView multiSplitView = MultiSplitView(
+    MultiSplitView multiSplitView = MultiSplitView(
         children: const [
           SelectorPage("Dietas"),
           SelectorPage("Alergias")
@@ -93,31 +93,14 @@ class Selectores extends StatelessWidget{
             )
         ),
         child: multiSplitView
-    );*/
+    );
 
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
       appBar: AppBar(
         title: const Text("Dietas y Alergias"),
       ),
-      body: Row(
-        children: const [
-          Expanded(
-              flex: 50,
-              child: SelectorPage("Dietas")),
-          VerticalDivider(
-            width: 10,
-            thickness: 2,
-            indent: 0,
-            endIndent: 0,
-            color: Colors.green,
-          ),
-          Expanded(
-              flex: 50,
-              child: SelectorPage("Alergias")),
-        ],
-      ),
+      body: theme,
     );
   }
 
@@ -137,12 +120,10 @@ class _SelectorPageState extends State<SelectorPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
       body: SafeArea(
         child: FilterListWidget<Opcion>(
           themeData: FilterListThemeData(context),
           //allButtonText: "Todos",
-          hideSearchField: true,  // Así en horizontal non temos problema
           resetButtonText: "Borrar",
           applyButtonText: "Guardar",
           controlButtons: const [/*ControlButtonType.All,*/ ControlButtonType.Reset],  // Quitamos botón todos de opcions de lista

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:practica/app.dart';
 import 'package:practica/edamam.dart';
 
+
 class Recetas with ChangeNotifier, DiagnosticableTreeMixin {
   late Future<RecipeBlock?> recetas = search_recipes("&q=salad");
 

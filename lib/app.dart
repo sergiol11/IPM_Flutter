@@ -2,13 +2,13 @@ import 'dart:core';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:filter_list/filter_list.dart';
+import 'package:octo_image/octo_image.dart';
 import 'package:practica/detalle_receta.dart';
 import 'package:practica/providers.dart';
 import 'edamam.dart';
 import 'layout_horizontal.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
-import 'package:octo_image/octo_image.dart';
 
 const int breakPoint = 600;
 
@@ -128,12 +128,12 @@ class _Botones extends State<Botones>{
                     Spacer(flex: 7),
                     Expanded(
                       flex: 35,
-                      child: Selector(opcion: "Dietas"),
+                      child: Selector("Dietas"),
                     ),
                     Spacer(flex: 15),
                     Expanded(
                       flex: 35,
-                      child: Selector(opcion: "Alergias"),
+                      child: Selector("Alergias"),
                     ),
                     Spacer(flex: 7),
                   ],
@@ -174,12 +174,12 @@ class _Botones extends State<Botones>{
                   ),
                   Expanded(
                       flex: 31,
-                      child: Calorias("Min",)
+                      child: Calorias("Min")
                   ),
                   Spacer(flex: 3),
                   Expanded(
                       flex: 31,
-                      child: Calorias("Max",)
+                      child: Calorias("Max")
                   ),
                   Spacer(flex: 6)
                 ],
@@ -205,12 +205,12 @@ class _Botones extends State<Botones>{
                   Expanded(
                     flex: 6,
                     child: Center(
-                      child: Text(
-                        '${context.watch<Ingredientes>().ingredientes}',
-                        style: const TextStyle(
-                            fontSize: 20
+                        child: Text(
+                            '${context.watch<Ingredientes>().ingredientes}',
+                            style: const TextStyle(
+                                fontSize: 20
+                            )
                         )
-                      )
                     ),
                   ),
                   const Spacer(flex: 1),
@@ -228,20 +228,20 @@ class _Botones extends State<Botones>{
               ),
             ),
             Expanded(
-              flex: 8,
-              child: Row(
-                children: [
-                  const Spacer(flex: 65),
-                  Expanded(
-                      flex: 25,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: BotonBuscar(),
-                      )
-                  ),
-                  const Spacer(flex: 5),
-                ],
-              )
+                flex: 8,
+                child: Row(
+                  children: [
+                    const Spacer(flex: 65),
+                    Expanded(
+                        flex: 25,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: BotonBuscar(),
+                        )
+                    ),
+                    const Spacer(flex: 5),
+                  ],
+                )
             ),
             //Spacer(flex: orientacion == "Vertical" ? 50 : 1)
             widget.orientacion == "Vertical" ?
@@ -265,13 +265,16 @@ class AvisoError extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      key: Key("Error"),
       title: const Icon(CupertinoIcons.exclamationmark_bubble,
         color: Colors.green,
         size: 50,),
       content: Text(mensajeError, textAlign: TextAlign.center,),
       actions: <Widget>[
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          key: Key("Boton OK"),
+          onPressed: () =>
+              Navigator.pop(context),
           child: const Text('OK'),
         ),
       ],
@@ -339,11 +342,11 @@ class _ListaRecetas extends State<ListaRecetas>{
   @override
   void initState() {
     super.initState();
-    recetas = search_recipes("&q=salad");
   }
 
+
   String _parser(String? palabra){
-    return palabra ?? "Error";   // Cambiar por outro mensaje!!!!!!!!!!!!!!!!!!!!!!
+    return palabra ?? "Error";   // Cambiar por outro mensaje!!!!!!!!!!!!!!!!!!!
   }
 
   Recipe _parser_recipe(Recipe? receta){
@@ -360,7 +363,7 @@ class _ListaRecetas extends State<ListaRecetas>{
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  Image.asset('images/snoopy-penalty-box.gif'),
+                  //Image.asset('images/snoopy-penalty-box.gif'),
                   const Text('There was a network error'),
                   ElevatedButton(
                     child: const Text('Try again'),
@@ -386,7 +389,7 @@ class _ListaRecetas extends State<ListaRecetas>{
                   child: ListView.separated(
                     itemCount: snapshot.data?.recipes?.length.toInt() ?? 0,  // Asi controlamos cando nn devolve info edadmam pintamos lista vacia
                     itemBuilder: (context, index) {
-                      return ListTile(    // ANTES AQUÍ COMPROBAR SE PARA ES ITEM TEMOS INFO DA RECETA!!! Senn devolver ListTIle con error!
+                      return ListTile(  // ANTES AQUÍ COMPROBAR SE PARA ES ITEM TEMOS INFO DA RECETA!!! Senn devolver ListTIle con error!
                           leading: CircleAvatar(
                             backgroundColor: Colors.white,
                             radius: 27,  // Tamaño imagen
@@ -395,7 +398,9 @@ class _ListaRecetas extends State<ListaRecetas>{
                               errorBuilder: OctoError.icon(color: Colors.green,),    // Icono si no se obtuvo la imagen
                             ),
                           ),
-                          title: Text(_parser(snapshot.data?.recipes?[index].label)),
+                          title: Text(
+                              _parser(snapshot.data?.recipes?[index].label)
+                          ),
                           subtitle: Text("Calorias: ${_parser(snapshot.data?.recipes?[index].calories?.toStringAsFixed(0))}     "
                               "     Ingredientes: ${_parser(snapshot.data?.recipes?[index].ingredients?.length.toString())}"),
                           trailing: SizedBox(
@@ -434,95 +439,6 @@ class _ListaRecetas extends State<ListaRecetas>{
     );
   }
 }
-
-/*class ImageBuilder extends StatefulWidget{
-  final String? urlImagen;
-
-  const ImageBuilder(this.urlImagen, {super.key});
-
-  @override
-  _ImageBuilderState createState() => _ImageBuilderState();
-}
-
-class _ImageBuilderState extends State<ImageBuilder>{
-
-  @override
-  void initState() {
-    super.initState();// Cast
-  }
-
-  /*Future<Image> getImagen(String? url) async {
-    return widget.urlImagen != null
-        ?
-    Image.network(
-      url!,
-      frameBuilder: (_, image, loadingBuilder, __) {
-        if (loadingBuilder == null) {
-          return const Expanded(
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-        return image;
-      },
-      loadingBuilder: (BuildContext context, Widget image, ImageChunkEvent? loadingProgress) {
-        if (loadingProgress == null) return image;
-        return Expanded(
-          // height: 300,
-          child: Center(
-            child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                  : null,
-            ),
-          ),
-        );
-      },
-      errorBuilder: (_, __, ___) => Image.asset(   // Preparar imagen de error!!!!!!!!!!!!!!!!!!!!!!!
-        'images/snoopy-penalty-box.gif',
-        //height: 300,
-        fit: BoxFit.fitHeight,
-      ),
-    )
-        : Image.asset('assets/images/Edamam_logo_full_RGB.png', scale: 6);
-  }*/
-
-  Future<Image> getImagen(String? url) async {
-    return url != null ? Image.network(url) : Image.network(url!);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<Image> (
-      future: getImagen(widget.urlImagen),
-      builder: (BuildContext context, AsyncSnapshot<Image> snapshot) {
-        if(snapshot.hasData){    // CASO BON
-          return InkWell(
-            child: snapshot.data,
-          );
-        } else if(snapshot.hasError){   // CASO ERROR!
-          return Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Image.asset('images/snoopy-penalty-box.gif'),
-                  const Text('There was a network error'),
-                  ElevatedButton(
-                    child: const Text('Try again'),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else {     // CALQUERA OUTRO CASO
-          return const Center(child: CircularProgressIndicator(),);
-        }
-      },
-    );
-  }
-}*/
-
-
 
 //////////////////////// LIST VIEW /////////////////////////////////////////////
 class CommonMethods {
@@ -574,6 +490,7 @@ class BotonBuscar extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return AnimatedButton(
+      key: Key("Buscar"),
       text: 'Buscar',
       onPress: () {
         CommonMethods methods = CommonMethods();
@@ -582,6 +499,10 @@ class BotonBuscar extends StatelessWidget{
         if(query.isNotEmpty){
           print(query);
           Provider.of<Recetas>(context, listen: false).buscarRecetas(query);
+        }else{
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => const AvisoError("Rellene algún campo antes de realizar una búsqueda."));
         }
       },
       isReverse: true,
@@ -599,7 +520,7 @@ class BotonContadorIngredientes extends StatefulWidget{
   final String accion;
   final bool visible;
 
-  BotonContadorIngredientes(this.accion, this.visible, {super.key});
+  const BotonContadorIngredientes(this.accion, this.visible, {super.key});
 
   @override
   _BotonContadorIngredientesState createState() => _BotonContadorIngredientesState();
@@ -611,6 +532,7 @@ class _BotonContadorIngredientesState extends State<BotonContadorIngredientes>{
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+        key: Key(widget.accion),
       // Incrementamos o decrementamos el contador según el botón y escogemos el icono
         backgroundColor: widget.visible ? Colors.green : Colors.grey,
         heroTag: widget.accion == "Add" ? "Uno" : "Dos",
@@ -632,66 +554,6 @@ class _BotonContadorIngredientesState extends State<BotonContadorIngredientes>{
         child: Icon(widget.accion == "Add" ? Icons.add : Icons.remove));
   }
 }
-
-class Calorias extends StatefulWidget {
-  final String limite;
-
-  const Calorias(this.limite, {super.key});
-
-  @override
-  State<Calorias> createState() => _CaloriasState();
-}
-
-
-class _CaloriasState extends State<Calorias> {     // É sin estdo???
-  late FocusNode myFocusNode;
-  final fieldText = TextEditingController();   // controlamos texto que se introduce
-  RegExp regex = RegExp(r'^[0-9]*$');  // regex que solo permite digitos
-
-  @override
-  void initState() {
-    super.initState();
-    myFocusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    myFocusNode.dispose();
-    fieldText.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-        focusNode: myFocusNode,
-        controller: fieldText,
-        restorationId: 'name_field',
-        textInputAction: TextInputAction.next,
-        textCapitalization: TextCapitalization.words,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 3.0),  // Facer menos alto o widget
-          filled: true,
-          labelText: widget.limite,
-        ),
-        onTap: () => myFocusNode.requestFocus(),
-        // Gardamos cada cambio que ocurra por se usuario non lle da a OK no teclado cando escriba!
-        onChanged: (text) => {
-          if(regex.hasMatch(text)){  // Actualizamos provider si se cumplen las condiciones
-            widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min(text)
-                : context.read<MinMaxCalorias>().set_max(text),
-          }else{     // Lanzamos aviso se non se cumplen condicións
-            showDialog(context: context, builder: (BuildContext context) => const AvisoError("Solo se permiten dígitos")),
-            widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min("")
-                : context.read<MinMaxCalorias>().set_max(""), // Actualizamos calorias a vacío
-            fieldText.clear(),    // Eliminamos texto del widget
-            myFocusNode.unfocus(),    // Quitamos foco del campo
-          }
-        }
-    );
-  }
-}
-
 
 class BuscadorNombreReceta extends StatefulWidget {    // É sin estado?
 
@@ -724,6 +586,7 @@ class _BuscadorNombreRecetaState extends State<BuscadorNombreReceta> {    // EST
   Widget build(BuildContext context) {
 
     return TextFormField(
+        key: const Key('Nombre receta'),
         focusNode: myFocusNode,
         textInputAction: TextInputAction.next,
         textCapitalization: TextCapitalization.words,
@@ -751,25 +614,106 @@ class _BuscadorNombreRecetaState extends State<BuscadorNombreReceta> {    // EST
   }
 }
 
-class Selector extends StatefulWidget {
-  final String opcion;
+class Calorias extends StatefulWidget {
+  final String limite;
 
-  const Selector({super.key, required this.opcion});
+  const Calorias(this.limite, {super.key});
 
   @override
-  State<Selector> createState() => _SelectorState();
+  State<Calorias> createState() => _CaloriasState(limite);
+}
+
+
+class _CaloriasState extends State<Calorias> {
+  final limite;
+  late FocusNode myFocusNode;
+  final fieldText = TextEditingController();   // controlamos texto que se introduce
+  RegExp regex = RegExp(r'^[0-9]*$');
+
+  _CaloriasState(this.limite);
+
+  @override
+  void initState() {
+    super.initState();
+    myFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    myFocusNode.dispose();
+    fieldText.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+        key: Key(limite),
+        focusNode: myFocusNode,
+        controller: fieldText,
+        restorationId: 'name_field',
+        textInputAction: TextInputAction.next,
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 3.0),  // Facer menos alto o widget
+          filled: true,
+          labelText: widget.limite,
+        ),
+        onTap: () => myFocusNode.requestFocus(),
+        // Gardamos cada cambio que ocurra por se usuario non lle da a OK no teclado cando escriba!
+        onChanged: (text) => {
+          if(regex.hasMatch(text)){  // Actualizamos provider si se cumplen las condiciones
+            widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min(text)
+                : context.read<MinMaxCalorias>().set_max(text),
+          }else{     // Lanzamos aviso se non se cumplen condicións
+            showDialog(context: context, builder: (BuildContext context) => const AvisoError("Solo se permiten dígitos")),
+            widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min("")
+                : context.read<MinMaxCalorias>().set_max(""), // Actualizamos calorias a vacío
+            fieldText.clear(),    // Eliminamos texto del widget
+            myFocusNode.unfocus(),    // Quitamos foco del campo
+          }
+        }
+    );
+  }
+}
+
+class Selector extends StatefulWidget {
+  final String seleccion;
+
+  const Selector(this.seleccion, {super.key});
+
+  @override
+  State<Selector> createState() => _SelectorState(seleccion);
 }
 
 ListaOpciones listaAux = ListaOpciones();
 
 class _SelectorState extends State<Selector> {
   late List<Opcion> lista;
+  final seleccion;
   List<Opcion>? selectedOptionsList = [];
+
+  _SelectorState(this.seleccion);
 
   @override
   void initState() {
     super.initState();
-    lista = widget.opcion == "Dietas" ? listaAux._dietas : listaAux._alergias;  // Inicializamos coa lista correspondente
+    lista = widget.seleccion == "Dietas" ? listaAux._dietas : listaAux._alergias;  // Inicializamos coa lista correspondente
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+        key: Key(seleccion),
+        onPressed: _openFilterDialogOpciones,
+        icon: const Icon(Icons.arrow_forward_ios),
+        label: Text(
+            seleccion,
+            style: const TextStyle(
+                fontSize: 16
+            )
+        )
+    );
   }
 
   Future<void> _openFilterDialogOpciones() async {
@@ -780,10 +724,10 @@ class _SelectorState extends State<Selector> {
         hideSelectedTextCount: false,   //Poñer a false se queremos ver cantos levamos seleccionados
         hideSearchField: true,  // Así en horizontal non temos problema
         themeData: FilterListThemeData(context),
-        headlineText: 'Selecciona  ${widget.opcion}', // Poñer o qeu buscamos
+        headlineText: 'Selecciona  ${widget.seleccion}', // Poñer o qeu buscamos
         height: 500,     // Esto creo que é o tamaño do Dialog asi que tocar se eso
         listData: lista,    // Lista para crear os iconos
-        selectedListData: widget.opcion == "Dietas" ? context.read<OpcionesSeleccionadas>().opcionesDietas
+        selectedListData: widget.seleccion == "Dietas" ? context.read<OpcionesSeleccionadas>().opcionesDietas
             : context.read<OpcionesSeleccionadas>().opcionesAlergias,    // Modificamos en el provider la lista de opciones correspondiente
         choiceChipLabel: (item) => item!.opcion,
         validateSelectedItem: (list, val) => list!.contains(val),
@@ -794,39 +738,12 @@ class _SelectorState extends State<Selector> {
 
         onApplyButtonClick: (list) {
           setState(() {
-            widget.opcion == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
+            widget.seleccion == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
                 : context.read<OpcionesSeleccionadas>().set_opciones_alergias(List.from(list!));  // Actualizamos la lista de opciones correspondiente
           }
           );
           Navigator.pop(context);
         }
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BotonDietaAlergia(title: widget.opcion, funcion: _openFilterDialogOpciones);
-  }
-}
-
-
-class BotonDietaAlergia extends StatelessWidget{
-  final String title;
-  final Future<void> Function() funcion;
-
-  const BotonDietaAlergia({super.key, required this.title, required this.funcion});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-        onPressed: funcion,
-        icon: const Icon(Icons.arrow_forward_ios),
-        label: Text(
-            title,
-            style: const TextStyle(
-                fontSize: 16
-            )
-        )
     );
   }
 }
@@ -910,6 +827,7 @@ class _ConfiguradorIngredientesState extends State<ConfiguradorIngredientes> {
   @override
   Widget build(BuildContext context) {
     return SwitchListTile(
+        key: const Key('Switch'),
         value: confIngredientes,
         onChanged: (bool value) {
           setState(() {
