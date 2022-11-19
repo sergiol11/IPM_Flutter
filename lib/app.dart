@@ -432,6 +432,7 @@ class _ListaRecetas extends State<ListaRecetas>{
                             height: 35,
                             width: 35,
                             child: FloatingActionButton(
+                              heroTag: "$index",
                               onPressed: () => Navigator.push(
                                   context,      // Navegamos á próxima pantalla
                                   MaterialPageRoute(
@@ -643,6 +644,7 @@ class _BotonContadorIngredientesState extends State<BotonContadorIngredientes>{
   Widget build(BuildContext context) {
     return FloatingActionButton(
       // Incrementamos o decrementamos el contador según el botón y escogemos el icono
+        heroTag: widget.accion == "Add" ? "Uno" : "Dos",
         onPressed: () => {
           if(widget.accion == "Add"){    // Incrementar
             context.read<Ingredientes>().increment()
