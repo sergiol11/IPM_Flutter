@@ -190,60 +190,33 @@ class _Botones extends State<Botones>{
               child: Row(
                 children: [
                   const Spacer(flex: 5),
-                  IgnorePointer(
-                    ignoring: !visible,
-                    child: AnimatedOpacity(
-                        opacity: visible ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: const Text("Ingredientes:",
-                          style: TextStyle(
-                              fontSize: 22
-                          ),
-                        )
+                  const Text(
+                    "Ingredientes:",
+                    style: TextStyle(
+                        fontSize: 22
                     ),
                   ),
                   const Spacer(flex: 3),
                   Expanded(
                     flex: 9,
-                    child: IgnorePointer(
-                      ignoring: !visible,
-                      child: AnimatedOpacity(
-                          opacity: visible ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 200),
-                          child: const BotonContadorIngredientes("Remove")
-                      ),
-                    ),
+                    child: BotonContadorIngredientes("Remove", this.visible),
                   ),
                   const Spacer(flex: 1),
                   Expanded(
                     flex: 6,
-                    child: IgnorePointer(
-                      ignoring: !visible,
-                      child: AnimatedOpacity(
-                          opacity: visible ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 200),
-                          child: Center(
-                              child: Text(
-                                  '${context.watch<Ingredientes>().ingredientes}',
-                                  style: const TextStyle(
-                                      fontSize: 20
-                                  )
-                              )
-                          )
-                      ),
+                    child: Center(
+                      child: Text(
+                        '${context.watch<Ingredientes>().ingredientes}',
+                        style: const TextStyle(
+                            fontSize: 20
+                        )
+                      )
                     ),
                   ),
                   const Spacer(flex: 1),
                   Expanded(
                     flex: 9,
-                    child: IgnorePointer(
-                      ignoring: !visible,
-                      child: AnimatedOpacity(
-                          opacity: visible ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 200),
-                          child: const BotonContadorIngredientes("Add")
-                      ),
-                    ),
+                    child: BotonContadorIngredientes("Add", this.visible),
                   ),
                   SizedBox(
                       height: 55,
@@ -624,8 +597,9 @@ class BotonBuscar extends StatelessWidget{
 
 class BotonContadorIngredientes extends StatefulWidget{
   final String accion;
+  final bool visible;
 
-  const BotonContadorIngredientes(this.accion, {super.key});
+  BotonContadorIngredientes(this.accion, this.visible, {super.key});
 
   @override
   _BotonContadorIngredientesState createState() => _BotonContadorIngredientesState();
@@ -638,16 +612,21 @@ class _BotonContadorIngredientesState extends State<BotonContadorIngredientes>{
   Widget build(BuildContext context) {
     return FloatingActionButton(
       // Incrementamos o decrementamos el contador según el botón y escogemos el icono
+        backgroundColor: widget.visible ? Colors.green : Colors.grey,
         heroTag: widget.accion == "Add" ? "Uno" : "Dos",
         onPressed: () => {
-          if(widget.accion == "Add"){    // Incrementar
-            context.read<Ingredientes>().increment()
-          }else{    // Decrementar
-            if(context.read<Ingredientes>().ingredientes == 2){
-              showDialog(context: context, builder: (BuildContext context) => const AvisoError("El mínimo de ingredientes son 2")),
+          if(widget.visible){
+            if(widget.accion == "Add"){
+              context.read<Ingredientes>().increment()
             }else{
-              context.read<Ingredientes>().decrement()
+              if(context.read<Ingredientes>().ingredientes == 2){
+                showDialog(context: context, builder: (BuildContext context) => const AvisoError("El mínimo de ingredientes son 2")),
+              }else{
+                context.read<Ingredientes>().decrement()
+              }
             }
+          }else{
+            null
           }
         },
         child: Icon(widget.accion == "Add" ? Icons.add : Icons.remove));
