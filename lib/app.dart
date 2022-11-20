@@ -2,13 +2,13 @@ import 'dart:core';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:filter_list/filter_list.dart';
+import 'package:octo_image/octo_image.dart';
 import 'package:practica/detalle_receta.dart';
 import 'package:practica/providers.dart';
 import 'edamam.dart';
 import 'layout_horizontal.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
-import 'package:octo_image/octo_image.dart';
 
 const int breakPoint = 600;
 
@@ -17,17 +17,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiProvider(   // Provider
         providers: [
           ChangeNotifierProvider(create: (_) => Ingredientes()),
           ChangeNotifierProvider(create: (_) => NombreReceta()),
           ChangeNotifierProvider(create: (_) => MinMaxCalorias()),
           ChangeNotifierProvider(create: (_) => OpcionesSeleccionadas()),
-          ChangeNotifierProvider(create: (_) => InfoEdamamRecetas())
+          ChangeNotifierProvider(create: (_) => Recetas()),
         ],
-        child: GestureDetector(   // Tocar pantalla e quitar foco do widget no que esté
+        child: GestureDetector(   // Detector para tocar pantalla y quitarle el foco al widget que lo tenga en ese momento
             onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-            child: MaterialApp(
+            child: MaterialApp(  // Aplicación
                 theme: ThemeData(
                   primarySwatch: Colors.green,
                 ),
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
 
 
 class MasterDetail extends StatelessWidget {
-  final String title;
+  final String title;  //??????????????????????????????????????????????
 
   const MasterDetail({super.key, required this.title});
 
@@ -48,11 +48,11 @@ class MasterDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          bool chooseMasterAndDetail = (
+          bool chooseMasterAndDetail = (   // Comprobamos si el dispositivo está en vertical o horizontal
               constraints.smallest.longestSide > breakPoint &&
                   MediaQuery.of(context).orientation == Orientation.landscape
           );
-          return chooseMasterAndDetail ? LayoutHorizontal() : const LayoutVertical();  // Diseño horizontal o vertical
+          return chooseMasterAndDetail ? const LayoutHorizontal() : const LayoutVertical();  // Diseño horizontal o vertical según la orientación del dispositivo
         }
     );
   }
@@ -60,13 +60,13 @@ class MasterDetail extends StatelessWidget {
 
 
 class LayoutVertical extends StatelessWidget {
-  final String texto = "buscar";
+  final String texto = "buscar";  // ??????????????????????????????????????????
 
   const LayoutVertical({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Botones("Vertical");
+    return const Botones("Vertical");  //???????????????????????????????????????
   }
 }
 
@@ -100,73 +100,67 @@ class _Botones extends State<Botones>{
         resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
         body: Column(
           children: [
-            Expanded(
-                flex: 8,
+            Expanded(  // Imagen del logo de Edamam
+                flex: 8,  // Espacio vertical correspondiente
                 child:
                 Image.asset('assets/images/Edamam_logo_full_RGB.png',
                     scale: 6
                 )
             ),
             Expanded(
-              flex: 8,
-              child: Row(   // BuscadorNombreReceta
-                children: const [
-                  Spacer(flex: 15),
+              flex: 8,  // Espacio vertical correspondiente
+              child: Row(   // Fila para el widget donde se introduce el nombre de receta
+                children: [
+                  Spacer(flex: 15),  // Espacio vacío a la izquierda
                   Expanded(
-                      flex: 70,      // %
-                      child: BuscadorNombreReceta()
+                      flex: 70,
+                      child: BuscadorNombreReceta()   // Widget línea ?????????????????????????
                   ),
-                  Spacer(flex: 15),
+                  Spacer(flex: 15),  // Espacio vacío a la derecha
                 ],
               ),
             ),
-            widget.orientacion == "Vertical" ?    // 2 botones para Dietas y Alergias en vertical
+            widget.orientacion == "Vertical" ?    // Si la orientación del dispositivo es vertical utilizamos un botón para Dietas y otro para Alergias
             Expanded(
-                flex: 8,
-                child: Row(   // Botóns Dietas e Alergias
-                  children: const [
-                    Spacer(flex: 7),
+                flex: 8,  // Espacio vertical correspondiente
+                child: Row(   // Fila para el botón Dietas y el botón Alergias
+                  children: [
+                    Spacer(flex: 7),  // Espacio vacío a la izquierda de los botones
                     Expanded(
                       flex: 35,
-                      child: Selector(opcion: "Dietas"),
+                      child: Selector("Dietas"),  // Botón para dietas
                     ),
-                    Spacer(flex: 15),
+                    Spacer(flex: 15),  // Espacio que separa los botones
                     Expanded(
                       flex: 35,
-                      child: Selector(opcion: "Alergias"),
+                      child: Selector("Alergias"),  // Botón para alergias
                     ),
-                    Spacer(flex: 7),
+                    Spacer(flex: 7),  // Espacio vacío a la derecha de los botones
                   ],
                 )
             )
-                :   // 1 solo botón para dietas y alergias en horizontal
+                :   // Si la orientación del dispositivo es horizontal utilizamos un botón para Dietas y Alergias
             Expanded(
-                flex: 8,
-                child: Row(
-                  children: [
+                flex: 8,  // Espacio vertical correspondiente
+                child: Row(  // Fila para el botón
+                  children: const [
+                    Spacer(flex: 15,),  // Espacio vacío a la izquierda de los botones
                     Expanded(
-                        flex: 15,
-                        child: Container()
-                    ),
-                    const Expanded(
                         flex: 70,
-                        child: SelectorHorizontal()
+                        child: SelectorHorizontal()   // ???????????????????????????????????????????????????????
                     ),
-                    Expanded(
-                        flex: 15,
-                        child: Container()
-                    )
+                    Spacer(flex: 15,)   // Espacio vacío a la derecha de los botones
                   ],
                 )
             ),
             Expanded(
-              flex: 8,
-              child: Row(   // Calorías
-                children: const [
-                  Spacer(flex: 5),
-                  Expanded(
+              flex: 8,  // Espacio vertical correspondiente
+              child: Row(   // Fila para introducir el mínimo y/o máximo de calorías
+                children: [
+                  const Spacer(flex: 5),  // Espacio vacío a la izquierda de los widgets
+                  const Expanded(
                       flex: 23,
-                      child: Text("Calorías:",
+                      child: Text("Kcal:",  // Texto indicando que son los widgets para indicar las calorías
                         style: TextStyle(
                             fontSize: 22
                         ),
@@ -174,93 +168,81 @@ class _Botones extends State<Botones>{
                   ),
                   Expanded(
                       flex: 31,
-                      child: Calorias("Min",)
+                      child: Calorias("Min")  // Widget para el mínimo de calorías
                   ),
-                  Spacer(flex: 3),
+                  Spacer(flex: 3),  // Espacio entre los widgets
                   Expanded(
                       flex: 31,
-                      child: Calorias("Max",)
+                      child: Calorias("Max")   // Widget para el máximo de calorías
                   ),
-                  Spacer(flex: 6)
+                  Spacer(flex: 6)  // Espacio vacío a la derecha de los widgets
                 ],
               ),
             ),
             Expanded(
-              flex: 8,
-              child: Row(
+              flex: 8,  // Espacio vertical correspondiente
+              child: Row(  // Fila para seleccionar el Nº de ingredientes
                 children: [
-                  const Spacer(flex: 5),
-                  IgnorePointer(
-                    ignoring: !visible,
-                    child: AnimatedOpacity(
-                      opacity: visible ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 200),
-                      child: const Text("Ingredientes:",
-                        style: TextStyle(
-                            fontSize: 22
-                        ),
-                      )
+                  const Spacer(flex: 5),  // Espacio vacío a la izquierda de los widgets
+                  const Text(
+                    "Ingredientes:",  // Texto indicando que se trata del selector de Nº de ingredientes
+                    style: TextStyle(
+                        fontSize: 22
                     ),
                   ),
-                  const Spacer(flex: 3),
+                  const Spacer(flex: 3),  // Espacio vacío entre texto y botón de decrementar
                   Expanded(
                     flex: 9,
-                    child: IgnorePointer(
-                      ignoring: !visible,
-                      child: AnimatedOpacity(
-                          opacity: visible ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 200),
-                          child: const BotonContadorIngredientes("Remove")
-                      ),
-                    ),
+                    child: BotonContadorIngredientes("Remove", this.visible),
                   ),
-                  const Spacer(flex: 1),
+                  const Spacer(flex: 1),  // Espacio vacío entre el botón de decrementar y el número de ingredientes
                   Expanded(
                     flex: 6,
-                    child: IgnorePointer(
-                      ignoring: !visible,
-                      child: AnimatedOpacity(
-                          opacity: visible ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 200),
-                          child: Center(
-                              child: Text(
-                                  '${context.watch<Ingredientes>().ingredientes}',
-                                  style: const TextStyle(
-                                      fontSize: 20
-                                  )
-                              )
-                          )
-                      ),
+                    child: Center(
+                        child: Text(
+                            '${context.watch<Ingredientes>().ingredientes}',  // Texto indicando el número de ingredientes
+                            style: const TextStyle(
+                                fontSize: 20
+                            )
+                        )
                     ),
                   ),
-                  const Spacer(flex: 1),
+                  const Spacer(flex: 1),  // Espacio vacío entre el número de ingredientes y el botón de incrementar
                   Expanded(
                     flex: 9,
-                    child: IgnorePointer(
-                      ignoring: !visible,
-                      child: AnimatedOpacity(
-                          opacity: visible ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 200),
-                          child: const BotonContadorIngredientes("Add")
-                      ),
-                    ),
+                    child: BotonContadorIngredientes("Add", this.visible),
                   ),
                   SizedBox(
                       height: 55,
                       width: 100,
                       child: ConfiguradorIngredientes(update)
                   ),
-                  const Spacer(flex: 6),
+                  const Spacer(flex: 6),  // Espacio vacío a la derecha de los widgets
                 ],
               ),
             ),
-            //Spacer(flex: orientacion == "Vertical" ? 50 : 1)
-            widget.orientacion == "Vertical" ?
+            Expanded(
+                flex: 8,
+                child: Row(
+                  children: [
+                    const Spacer(flex: 65),
+                    Expanded(
+                        flex: 25,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: BotonBuscar(),
+                        )
+                    ),
+                    const Spacer(flex: 5),
+                  ],
+                )
+            ),
+            widget.orientacion == "Vertical" ?  // Si la orientación del dispositivo es vertical
             const Expanded(
-                flex: 50,
+                flex: 50,   // utilizamos la mitad inferior de la pantalla para el widget en el que se muestra la lista de recetas
                 child: LayoutRecetas("Vertical")
             )
-                : const Spacer(flex: 1,)
+                : const Spacer(flex: 1,)  // Si la orientación es horizontal establecemos un espacio vacío mínimo debajo del botón Buscar
           ],
         )
     );
@@ -276,13 +258,16 @@ class AvisoError extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      key: Key("Error"),
       title: const Icon(CupertinoIcons.exclamationmark_bubble,
         color: Colors.green,
         size: 50,),
       content: Text(mensajeError, textAlign: TextAlign.center,),
       actions: <Widget>[
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          key: Key("Boton OK"),
+          onPressed: () =>
+              Navigator.pop(context),
           child: const Text('OK'),
         ),
       ],
@@ -290,153 +275,135 @@ class AvisoError extends StatelessWidget{
   }
 }
 
-////////////////////////// LIST VIEW  ///////////////////////////////////////////
+
 class LayoutRecetas extends StatelessWidget {
-  final String orientacion;
+  final String orientacion;  // Guardamos la orientación del dispositivo
 
   const LayoutRecetas(this.orientacion, {super.key});
-
 
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 1.0,  // Para que se mostre inicialmente coa altura de todo o fillo,
-      minChildSize: 1.0,  // Mínima altura poñemos a de todito o fillo así forzamos que non se faga drag para abaixo!
+      initialChildSize: 1.0,  // Establecemos el tamaño inicial del widget al total de su padre
+      minChildSize: 1.0,  // Tamaño mínimo del widget (el total de su padre)
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
-          // Padding para que non se vaia a curva!
-            padding: orientacion == "Vertical" ? const EdgeInsets.only(top: 10) : const EdgeInsets.only(left: 10, top: 10),  // PADDING DO BOTÓN BUSCAR + PARA MANTER A CURVA VERDE!
-            decoration: orientacion == "Vertical" ?
-            const BoxDecoration(  // Borde curvo + color de borde negro
+            // Padding para que no se borre la línea curva verde (si la orientación es vertical por la parte superior y si es horizontal por la parte izquierda)
+            padding: orientacion == "Vertical" ? const EdgeInsets.only(top: 10) : const EdgeInsets.only(left: 10, top: 10),
+            decoration: orientacion == "Vertical" ?  // Si el dispositivo está vertical
+            const BoxDecoration(  // Creamos curvas en los bordes superiores
               borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-              color: Colors.white,
+              color: Colors.white, // Fondo blanco
               boxShadow: [
                 BoxShadow(
-                  color: Colors.green,
-                  spreadRadius: 1,
+                  color: Colors.green,  //Color de la curva
+                  spreadRadius: 2,   // Grosor de la curva
                 ),
               ],
             )
-                :
-            const BoxDecoration(  // Borde curvo + color de borde negro
+                :  // Si el dispositivo está horizontal
+            const BoxDecoration(  // Creamos curvas en los bordes izquierdos
               borderRadius: BorderRadius.only(topLeft: Radius.circular(15), bottomLeft: Radius.circular(15)),
-              color: Colors.white,
+              color: Colors.white,  // Fondo blanco
               boxShadow: [
                 BoxShadow(
-                  color: Colors.green,
-                  spreadRadius: 1,
+                  color: Colors.green,  // Color de la curva
+                  spreadRadius: 2,  // Grosor de la curva
                 ),
               ],
             ),
-            child: ListaRecetas(orientacion)
+            child: ListaRecetas(orientacion)  // Creamos como hijo a la lista de recetas
         );
       },
     );
   }
 }
 
-class ListaRecetas extends StatefulWidget{
+class ListaRecetas extends StatelessWidget {
   final String orientacion;
 
   ListaRecetas(this.orientacion, {super.key});
 
   @override
-  _ListaRecetas createState() => _ListaRecetas();
-}
-
-class _ListaRecetas extends State<ListaRecetas>{
-  late Future<RecipeBlock?>? recetas;
-
-  @override
-  void initState() {
-    super.initState();
-    recetas = search_recipes("&q=salad");
-  }
-
-  String _parser(String? palabra){
-    return palabra ?? "Error";   // Cambiar por outro mensaje!!!!!!!!!!!!!!!!!!!!!!
-  }
-
-  Recipe _parser_recipe(Recipe? receta){
-    return receta ?? Recipe();
-  }
-
-  update(String query){
-    setState(() {
-      recetas = search_recipes(query);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return FutureBuilder<RecipeBlock?> (
-      future: recetas,
+      future: context.watch<Recetas>().recetas,
       builder: (BuildContext context, AsyncSnapshot<RecipeBlock?> snapshot) {
-        if (snapshot.hasError) {
+        if (snapshot.hasError) {   // Si hubo error obteniendo información de Edamam
           return Center(
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  Image.asset('images/snoopy-penalty-box.gif'),
-                  const Text('There was a network error'),
+                  //Image.asset('images/snoopy-penalty-box.gif'),
+                  const Text('Ocurrió un error con la red'),  // Indicamos que hubo error
                   ElevatedButton(
-                    child: const Text('Try again'),
-                    onPressed: () {},
+                    child: const Text('Reintentar'),    // Y habilitamos botón para probar de nuevo la búsqueda
+                    onPressed: () {},   //??????????????????????????????????????????
                   ),
                 ],
               ),
             ),
           );
         }
-        else if (snapshot.connectionState != ConnectionState.done) {
+        else if (snapshot.connectionState != ConnectionState.done) {  // Mientras la conexión para obtener datos de Edamam no termine mostramos un círculo de progreso
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
-        else {
+        else {   // Si no hubo errores y la conexión ha finalizado procedemos a mostrar la lista de recetas
           return Scaffold(
-            resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
+            resizeToAvoidBottomInset: false,  // Evitamos que el teclado redimensione pantalla
             body: Column(
               children: [
                 Expanded(
-                    flex: 10,
-                    child: Row(
-                      children: [
-                        const Spacer(flex: 30),
-                        Expanded(
-                            flex: 40,
-                            child: BotonBuscar(update)
-                        ),
-                        const Spacer(flex: 30),
-                      ],
-                    )
-                ),
-                Expanded(
-                  flex: 90,
-                  child: ListView.separated(
-                    itemCount: snapshot.data?.recipes?.length.toInt() ?? 0,  // Asi controlamos cando nn devolve info edadmam pintamos lista vacia
-                    itemBuilder: (context, index) {
-                      return ListTile(    // ANTES AQUÍ COMPROBAR SE PARA ES ITEM TEMOS INFO DA RECETA!!! Senn devolver ListTIle con error!
+                  child:
+                  snapshot.data?.recipes?.length == null ?  // Si el contenido devuelto por Edamam es nulo mostramos que no se han encontrado recetas
+                  Column(
+                    children: const [
+                      Spacer(flex: 15),
+                      Center(
+                          child: Icon(
+                              Icons.sentiment_very_dissatisfied, size: 100
+                          )
+                      ),
+                      Center(
+                          child: Text(
+                            "No se han encontrado recetas",
+                            style: TextStyle(
+                                fontSize: 25
+                            ),
+                          )
+                      ),
+                      Spacer(flex: 25)
+                    ],
+                  )
+                      :   // Si Edamam devuelve contenido no vacío procedemos a mostrar las recetas
+                  ListView.separated(
+                    itemCount: (snapshot.data?.recipes?.length.toInt())!,  // Número de recetas a mostrar
+                    itemBuilder: (context, index) {   // Mostramos cada receta de la siguiente forma
+                      return ListTile(
                           leading: CircleAvatar(
                             backgroundColor: Colors.white,
                             radius: 27,  // Tamaño imagen
-                            child: OctoImage(image: NetworkImage(_parser(snapshot.data?.recipes?[index].image)),  // Imagen
-                            progressIndicatorBuilder: OctoProgressIndicator.circularProgressIndicator(),   // Circulo de progreso
-                            errorBuilder: OctoError.icon(color: Colors.green,),    // Icono si no se obtuvo la imagen
+                            child: OctoImage(image: NetworkImage((snapshot.data?.recipes?[index].image)!),  // Imagen de la receta
+                              progressIndicatorBuilder: OctoProgressIndicator.circularProgressIndicator(),   // Circulo de progreso mientras carga
+                              errorBuilder: OctoError.icon(color: Colors.green,),    // Icono si no se obtuvo la imagen   CAMBIAR??????????????????????????????
                             ),
                           ),
-                          title: Text(_parser(snapshot.data?.recipes?[index].label)),
-                          subtitle: Text("Calorias: ${_parser(snapshot.data?.recipes?[index].calories?.toStringAsFixed(0))}     "
-                              "     Ingredientes: ${_parser(snapshot.data?.recipes?[index].ingredients?.length.toString())}"),
+                          title: Text(   // Nombre de la receta
+                              (snapshot.data?.recipes?[index].label)!
+                          ),
+                          subtitle: Text("Kcal: ${(snapshot.data?.recipes?[index].calories?.toStringAsFixed(0))}     "
+                              "     Ingredientes: ${(snapshot.data?.recipes?[index].ingredients?.length.toString())}"), // Nº de calorías e ingredientes
                           trailing: SizedBox(
                             height: 35,
                             width: 35,
-                            child: FloatingActionButton(
-                              heroTag: "$index",
-                              onPressed: () => Navigator.push(
-                                  context,      // Navegamos á próxima pantalla
+                            child: FloatingActionButton(  // Botón para acceder al detalle de la receta
+                              heroTag: "$index",  // Cada FloatingActionButon debe tener un heroTag único para que no se produzcan errores
+                              onPressed: () => Navigator.push(  // Cuando se presiona el botón pasamos a una nueva pantalla
+                                  context,
                                   MaterialPageRoute(
-                                      builder: (context) => LayoutDetalle(widget.orientacion, _parser_recipe(snapshot.data?.recipes?[index])) // Devolvemos a receta ou unha receta vacía se nn temos info
+                                      builder: (context) => LayoutDetalle((snapshot.data?.recipes?[index])!) // Pantalla de detalle de la receta LÍNEA ?????????????????????
                                   )
                               ),
                               backgroundColor: Colors.white,
@@ -446,12 +413,12 @@ class _ListaRecetas extends State<ListaRecetas>{
                           )
                       );
                     },
-                    separatorBuilder: (BuildContext context, int index) {  // Separador de elementos
+                    separatorBuilder: (BuildContext context, int index) {  // Separador entre recetas
                       return const Divider(
                         color: Colors.green,
                         thickness: 2,
-                        indent: 16,  // Espacio inicial
-                        endIndent: 20,   // Espacio final
+                        indent: 16,  // Padding izquierdo
+                        endIndent: 20,   // Padding derecho
                       );
                     },
                   ),
@@ -464,95 +431,6 @@ class _ListaRecetas extends State<ListaRecetas>{
     );
   }
 }
-
-/*class ImageBuilder extends StatefulWidget{
-  final String? urlImagen;
-
-  const ImageBuilder(this.urlImagen, {super.key});
-
-  @override
-  _ImageBuilderState createState() => _ImageBuilderState();
-}
-
-class _ImageBuilderState extends State<ImageBuilder>{
-
-  @override
-  void initState() {
-    super.initState();// Cast
-  }
-
-  /*Future<Image> getImagen(String? url) async {
-    return widget.urlImagen != null
-        ?
-    Image.network(
-      url!,
-      frameBuilder: (_, image, loadingBuilder, __) {
-        if (loadingBuilder == null) {
-          return const Expanded(
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-        return image;
-      },
-      loadingBuilder: (BuildContext context, Widget image, ImageChunkEvent? loadingProgress) {
-        if (loadingProgress == null) return image;
-        return Expanded(
-          // height: 300,
-          child: Center(
-            child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                  : null,
-            ),
-          ),
-        );
-      },
-      errorBuilder: (_, __, ___) => Image.asset(   // Preparar imagen de error!!!!!!!!!!!!!!!!!!!!!!!
-        'images/snoopy-penalty-box.gif',
-        //height: 300,
-        fit: BoxFit.fitHeight,
-      ),
-    )
-        : Image.asset('assets/images/Edamam_logo_full_RGB.png', scale: 6);
-  }*/
-
-  Future<Image> getImagen(String? url) async {
-    return url != null ? Image.network(url) : Image.network(url!);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<Image> (
-      future: getImagen(widget.urlImagen),
-      builder: (BuildContext context, AsyncSnapshot<Image> snapshot) {
-        if(snapshot.hasData){    // CASO BON
-          return InkWell(
-            child: snapshot.data,
-          );
-        } else if(snapshot.hasError){   // CASO ERROR!
-          return Center(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Image.asset('images/snoopy-penalty-box.gif'),
-                  const Text('There was a network error'),
-                  ElevatedButton(
-                    child: const Text('Try again'),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else {     // CALQUERA OUTRO CASO
-          return const Center(child: CircularProgressIndicator(),);
-        }
-      },
-    );
-  }
-}*/
-
-
 
 //////////////////////// LIST VIEW /////////////////////////////////////////////
 class CommonMethods {
@@ -600,13 +478,11 @@ class CommonMethods {
 }
 
 class BotonBuscar extends StatelessWidget{
-  Function update;
-
-  BotonBuscar(this.update, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return AnimatedButton(
+      key: Key("Buscar"),
       text: 'Buscar',
       onPress: () {
         CommonMethods methods = CommonMethods();
@@ -614,7 +490,11 @@ class BotonBuscar extends StatelessWidget{
 
         if(query.isNotEmpty){
           print(query);
-          update(query);
+          Provider.of<Recetas>(context, listen: false).buscarRecetas(query);
+        }else{
+          showDialog(
+              context: context,
+              builder: (BuildContext context) => const AvisoError("Rellene algún campo antes de realizar una búsqueda."));
         }
       },
       isReverse: true,
@@ -630,8 +510,9 @@ class BotonBuscar extends StatelessWidget{
 
 class BotonContadorIngredientes extends StatefulWidget{
   final String accion;
+  final bool visible;
 
-  const BotonContadorIngredientes(this.accion, {super.key});
+  const BotonContadorIngredientes(this.accion, this.visible, {super.key});
 
   @override
   _BotonContadorIngredientesState createState() => _BotonContadorIngredientesState();
@@ -643,213 +524,156 @@ class _BotonContadorIngredientesState extends State<BotonContadorIngredientes>{
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      // Incrementamos o decrementamos el contador según el botón y escogemos el icono
-        heroTag: widget.accion == "Add" ? "Uno" : "Dos",
+        key: Key(widget.accion),
+        // Incrementamos o decrementamos el contador según el botón y escogemos el icono
+        backgroundColor: widget.visible ? Colors.green : Colors.grey,
+        heroTag: widget.accion == "Add" ? "Uno" : "Dos",  // Cada FloatingActionButon debe tener un heroTag único para que no se produzcan errores
         onPressed: () => {
-          if(widget.accion == "Add"){    // Incrementar
-            context.read<Ingredientes>().increment()
-          }else{    // Decrementar
-            if(context.read<Ingredientes>().ingredientes == 2){
-              showDialog(context: context, builder: (BuildContext context) => const AvisoError("El mínimo de ingredientes son 2")),
+          if(widget.visible){
+            if(widget.accion == "Add"){
+              context.read<Ingredientes>().increment()
             }else{
-              context.read<Ingredientes>().decrement()
+              if(context.read<Ingredientes>().ingredientes == 2){
+                showDialog(context: context, builder: (BuildContext context) => const AvisoError("El mínimo de ingredientes son 2")),
+              }else{
+                context.read<Ingredientes>().decrement()
+              }
             }
+          }else{
+            null
           }
         },
         child: Icon(widget.accion == "Add" ? Icons.add : Icons.remove));
   }
 }
 
-class Calorias extends StatefulWidget {
-  final String limite;
 
-  const Calorias(this.limite, {super.key});
-
-  @override
-  State<Calorias> createState() => _CaloriasState();
-}
-
-
-class _CaloriasState extends State<Calorias> {     // É sin estdo???
-  late FocusNode myFocusNode;
-  final fieldText = TextEditingController();   // controlamos texto que se introduce
-  RegExp regex = RegExp(r'^[0-9]*$');  // regex que solo permite digitos
-
-  @override
-  void initState() {
-    super.initState();
-    myFocusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    myFocusNode.dispose();
-    fieldText.dispose();
-    super.dispose();
-  }
+class BuscadorNombreReceta extends StatelessWidget {
+  FocusNode myFocusNode = FocusNode();       // widget para pedir o soltar foco
+  RegExp regex = RegExp(r'^[a-zA-Z ]*$');  // regex que solo permite letras y espacios
+  final fieldText = TextEditingController();   // controlador del texto que se introduce en el widget
 
   @override
   Widget build(BuildContext context) {
+
+    fieldText.text = context.read<NombreReceta>().nombre_receta;  // Valor inicial del texto del widget
+
     return TextFormField(
+        key: const Key('Nombre receta'),
         focusNode: myFocusNode,
         controller: fieldText,
-        restorationId: 'name_field',
-        textInputAction: TextInputAction.next,
-        textCapitalization: TextCapitalization.words,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 3.0),  // Facer menos alto o widget
-          filled: true,
-          labelText: widget.limite,
-        ),
-        onTap: () => myFocusNode.requestFocus(),
-        // Gardamos cada cambio que ocurra por se usuario non lle da a OK no teclado cando escriba!
-        onChanged: (text) => {
-          if(regex.hasMatch(text)){  // Actualizamos provider si se cumplen las condiciones
-            widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min(text)
-                : context.read<MinMaxCalorias>().set_max(text),
-          }else{     // Lanzamos aviso se non se cumplen condicións
-            showDialog(context: context, builder: (BuildContext context) => const AvisoError("Solo se permiten dígitos")),
-            widget.limite == "Min" ? context.read<MinMaxCalorias>().set_min("")
-                : context.read<MinMaxCalorias>().set_max(""), // Actualizamos calorias a vacío
-            fieldText.clear(),    // Eliminamos texto del widget
-            myFocusNode.unfocus(),    // Quitamos foco del campo
-          }
-        }
-    );
-  }
-}
-
-
-class BuscadorNombreReceta extends StatefulWidget {    // É sin estado?
-
-  const BuscadorNombreReceta({super.key});
-
-  @override
-  State<BuscadorNombreReceta> createState() => _BuscadorNombreRecetaState();  // Esto non sei se poñer como cabrero ou como prueba
-}
-
-
-class _BuscadorNombreRecetaState extends State<BuscadorNombreReceta> {    // ESTARÍA GUAI QUE ESTO SUGIERA MENTRES ESTÁ BUSCANDO NOMES DE RECETAS!!!!!!!!!!!!!
-  late FocusNode myFocusNode;
-  RegExp regex = RegExp(r'^[a-zA-Z ]*$');  // regex que solo permite letras y espacios
-  final fieldText = TextEditingController();   // controlamos texto que se introduce
-
-  @override
-  void initState() {
-    super.initState();
-    myFocusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    myFocusNode.dispose();
-    fieldText.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    return TextFormField(
-        focusNode: myFocusNode,
-        textInputAction: TextInputAction.next,
-        textCapitalization: TextCapitalization.words,
-        initialValue: "Salad",
         decoration: const InputDecoration(
-            filled: true,
+            filled: true,  // Fondo gris del widget
             icon: Icon(Icons.search),
             labelText: "Receta",
             hintText: "Buscar"
         ),
-        onTap: () => myFocusNode.requestFocus(), // Para doble clic hai que usar Gesture!
+        onTap: () => myFocusNode.requestFocus(), // Cuando tocamos el widget se pide el foco
 
-        // Gardamos o nome da receta introducido cada vez que hai un cambio por se usuario non lle dá a OK no teclado
-        onChanged: (text) => {
-          if(regex.hasMatch(text)){  // Actualizamos provider si se cumplen las condiciones do texto
-            context.read<NombreReceta>().set_nombre_receta(text),
-          }else{     // Lanzamos aviso se non se cumplen condicións
-            showDialog(context: context, builder: (BuildContext context) => const AvisoError("Solo se permiten letras y espacios")),
-            context.read<NombreReceta>().set_nombre_receta(""),   // Actualizamos nombre a vacio
-            fieldText.clear(),    // Eliminamos texto del widget
-            myFocusNode.unfocus()    // Quitamos foco del campo
+        onChanged: (text) => {  // Cuando el texto del widget cambia
+          if(regex.hasMatch(text)){  // Comprobamos si el texto introducido cumple das reglas definidas en el regex
+            context.read<NombreReceta>().set_nombre_receta(text),   // Si las cumple actualizamos el provider con el nuevo nombre de receta
+          }else{     // Si no las cumple
+            showDialog(context: context, builder: (BuildContext context) => const AvisoError("Solo se permiten letras y espacios")),  // Avisamos del error
+            context.read<NombreReceta>().set_nombre_receta(""),   // Actualizamos nombre de receta a vacío
+            fieldText.clear(),    // Eliminamos el texto del widget
+            myFocusNode.unfocus()    // Quitamos foco del widget
           }
         }
     );
   }
 }
 
-class Selector extends StatefulWidget {
-  final String opcion;
 
-  const Selector({super.key, required this.opcion});
+class Calorias extends StatelessWidget {
+  final String limite;  // Variable donde guardamos si se trata del máximo o mínimo de calorías
+  FocusNode myFocusNode = FocusNode();     // widget para pedir o soltar foco
+  final fieldText = TextEditingController();   // controlador del texto que se introduce en el widget
+  RegExp regex = RegExp(r'^[0-9]*$');  // regex que solo permite dígitos (0-9)
 
-  @override
-  State<Selector> createState() => _SelectorState();
-}
-
-ListaOpciones listaAux = ListaOpciones();
-
-class _SelectorState extends State<Selector> {
-  late List<Opcion> lista;
-  List<Opcion>? selectedOptionsList = [];
+  Calorias(this.limite);
 
   @override
-  void initState() {
-    super.initState();
-    lista = widget.opcion == "Dietas" ? listaAux._dietas : listaAux._alergias;  // Inicializamos coa lista correspondente
-  }
+  Widget build(BuildContext context) {
+    return TextFormField(
+        key: Key(limite),
+        focusNode: myFocusNode,
+        controller: fieldText,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 3.0),  // Padding interno del widget
+          filled: true,  // Fondo gris
+          labelText: limite,
+        ),
 
-  Future<void> _openFilterDialogOpciones() async {
-    await FilterListDialog.display<Opcion>(
-        context,
-        resetButtonText: "Borrar",
-        applyButtonText: "Guardar",
-        hideSelectedTextCount: false,   //Poñer a false se queremos ver cantos levamos seleccionados
-        hideSearchField: true,  // Así en horizontal non temos problema
-        themeData: FilterListThemeData(context),
-        headlineText: 'Selecciona  ${widget.opcion}', // Poñer o qeu buscamos
-        height: 500,     // Esto creo que é o tamaño do Dialog asi que tocar se eso
-        listData: lista,    // Lista para crear os iconos
-        selectedListData: widget.opcion == "Dietas" ? context.read<OpcionesSeleccionadas>().opcionesDietas
-            : context.read<OpcionesSeleccionadas>().opcionesAlergias,    // Modificamos en el provider la lista de opciones correspondiente
-        choiceChipLabel: (item) => item!.opcion,
-        validateSelectedItem: (list, val) => list!.contains(val),
-        controlButtons: [ControlButtonType.Reset],  // Quitamos botón todos de opcions de lista
-        onItemSearch: (opt, query) {
-          return opt.opcion.toLowerCase().contains(query.toLowerCase());
-        },
+        onTap: () => myFocusNode.requestFocus(),  // Cuando tocamos el widget se pide el foco
 
-        onApplyButtonClick: (list) {
-          setState(() {
-            widget.opcion == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
-                : context.read<OpcionesSeleccionadas>().set_opciones_alergias(List.from(list!));  // Actualizamos la lista de opciones correspondiente
+        onChanged: (text) => {   // Cuando el texto del widget cambia
+          if(regex.hasMatch(text)){  // Comprobamos si el texto introducido cumple las reglas del regex
+            limite == "Min" ? context.read<MinMaxCalorias>().set_min(text)   // Si las cumple actualizamos el mínimo o máximo de calorías en el provider
+                : context.read<MinMaxCalorias>().set_max(text),
+          }else{     // Si no las cumple
+            showDialog(context: context, builder: (BuildContext context) => const AvisoError("Solo se permiten dígitos")),  // Avisamos del error
+            limite == "Min" ? context.read<MinMaxCalorias>().set_min("")
+                : context.read<MinMaxCalorias>().set_max(""), // Actualizamos el mínimo o máximo de calorías a vacío
+            fieldText.clear(),    // Eliminamos el texto del widget
+            myFocusNode.unfocus(),    // Quitamos foco del widget
           }
-          );
-          Navigator.pop(context);
         }
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return BotonDietaAlergia(title: widget.opcion, funcion: _openFilterDialogOpciones);
-  }
 }
 
 
-class BotonDietaAlergia extends StatelessWidget{
-  final String title;
-  final Future<void> Function() funcion;
+ListaOpciones listaAux = ListaOpciones();  // Variable con la lista de opciones para dietas y alergias
 
-  const BotonDietaAlergia({super.key, required this.title, required this.funcion});
+class Selector extends StatelessWidget {
+  final String seleccion;  // Variable donde guardamos si estamos trabajando con dietas o alergias
+
+  Selector(this.seleccion, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-        onPressed: funcion,
+
+    Future<void> _openFilterDialogOpciones() async {
+      await FilterListDialog.display<Opcion>(   // Widget encargado de mostrar el diálogo
+          context,
+          resetButtonText: "Borrar",
+          applyButtonText: "Guardar",
+          hideSearchField: true,  // Ocultamos el buscador de opciones (???????????????????????????????????????)
+          selectedItemsText: "Seleccionadas",  // Texto que se muestra al lado del número de opciones seleccionadas
+          themeData: FilterListThemeData(context),
+          headlineText: 'Selecciona  ${seleccion}', // Título del cuadro de diálogo
+
+          // Lista de opciones disponibles (de dietas o alergias dependiendo del caso)
+          listData: seleccion == "Dietas" ? listaAux.dietas
+              : listaAux.alergias,
+
+          // Lista donde se leen las opciones seleccionadas (leemos la lista del provider)
+          selectedListData: seleccion == "Dietas" ? context.read<OpcionesSeleccionadas>().opcionesDietas
+              : context.read<OpcionesSeleccionadas>().opcionesAlergias,
+
+          choiceChipLabel: (item) => item!.opcion,  // Texto de la opción
+          validateSelectedItem: (list, val) => list!.contains(val),  // Identifica si una opción está seleccionada o no
+          controlButtons: [ControlButtonType.Reset],  // Añadimos un botón de borrar todas las opciones seleccionadas
+          onItemSearch: (opt, query) {  // Acción a realizar en la búsqueda (obligatorio pese a tenerla deshabilitada)
+            return opt.opcion.toLowerCase().contains(query.toLowerCase());
+          },
+
+          onApplyButtonClick: (list) {  // Cuando clickamos en el botón guardar
+            // Guardamos en la lista correspondiente del provider (Dietas o Alergias) las opciones seleccionadas
+            seleccion == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
+                : context.read<OpcionesSeleccionadas>().set_opciones_alergias(List.from(list!));
+            Navigator.pop(context);  // Y salimos del cuadro de diálogo
+          }
+      );
+    }
+
+    return ElevatedButton.icon(  // Creamos el botón
+        key: Key(seleccion),
+        onPressed: _openFilterDialogOpciones,  // Función que dispara el diálogo para seleccionar las opciones
         icon: const Icon(Icons.arrow_forward_ios),
         label: Text(
-            title,
+            seleccion,  // El texto correspondiente del botón (Dietas o Alergias)
             style: const TextStyle(
                 fontSize: 16
             )
@@ -937,6 +761,7 @@ class _ConfiguradorIngredientesState extends State<ConfiguradorIngredientes> {
   @override
   Widget build(BuildContext context) {
     return SwitchListTile(
+        key: const Key('Switch'),
         value: confIngredientes,
         onChanged: (bool value) {
           setState(() {

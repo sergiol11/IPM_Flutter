@@ -16,12 +16,12 @@ class LayoutHorizontal extends StatelessWidget{
       resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
       body: Row(   // Tomamos el diseño como horizontal
         children: const [
-          Expanded(
-              flex: 50,   // 45%
+          Expanded(  // En la mitad izquierda de la pantalla ponemos los botones y widgets para personalizar la búsqueda
+              flex: 50,
               child: Botones("Horizontal")
           ),
-          Expanded(
-              flex: 50,    // 55%
+          Expanded(  // En la mitad derecha de la pantalla ponemos la lista de recetas
+              flex: 50,
               child: LayoutRecetas("Horizontal")
           )
         ],
@@ -38,7 +38,7 @@ class SelectorHorizontal extends StatelessWidget{
   Widget build(BuildContext context) {
     return Row(
       children: const [
-        Expanded(child: BotonDietaAlergiaHorizontal())
+        Expanded(child: BotonDietaAlergiaHorizontal())  // Creamos el botón que nos lleva a la pantalla para seleccionar las opciones de dietas y alergias
       ],
     );
   }
@@ -51,8 +51,8 @@ class BotonDietaAlergiaHorizontal extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-        onPressed: () => Navigator.push(
-            context,      // Navegamos á próxima pantalla
+        onPressed: () => Navigator.push(  // Cuando pulsemos el botón navegamos a la pantalla que nos permite escoger las opciones de dietas y alergias
+            context,
             MaterialPageRoute(
                 builder: (context) => const Selectores()
             )
@@ -68,71 +68,46 @@ class BotonDietaAlergiaHorizontal extends StatelessWidget{
 }
 
 
-final ListaOpciones listaOpciones = ListaOpciones();
+final ListaOpciones listaOpciones = ListaOpciones();  // Variable con las opciones de dietas y alergias disponibles
 
 
 class Selectores extends StatelessWidget{
   const Selectores({super.key});
 
-
   @override
   Widget build(BuildContext context) {
-    /*MultiSplitView multiSplitView = MultiSplitView(
-        children: const [
-          SelectorPage("Dietas"),
-          SelectorPage("Alergias")
-        ]
-    );
-
-
-    MultiSplitViewTheme theme = MultiSplitViewTheme(
-        data: MultiSplitViewThemeData(
-            dividerPainter: DividerPainters.dashed(
-                color: Colors.deepOrange,
-                highlightedColor: Colors.black
-            )
-        ),
-        child: multiSplitView
-    );*/
-
 
     return Scaffold(
       resizeToAvoidBottomInset: false,  // Evitamos que teclado redimensione pantalla
-      appBar: AppBar(
+      appBar: AppBar(   // Barra inicial con título que nos permite volver a la pantalla anterior
         title: const Text("Dietas y Alergias"),
       ),
       body: Row(
         children: const [
-          Expanded(
+          Expanded(  // Mitad izquierda de pantalla para seleccionar opciones de las dietas
               flex: 50,
               child: SelectorPage("Dietas")),
-          VerticalDivider(
+          VerticalDivider(  // Divisor entre opciones
             width: 10,
             thickness: 2,
             indent: 0,
             endIndent: 0,
             color: Colors.green,
           ),
-          Expanded(
+          Expanded(  // Mitad derecha de la pantalla para seleccionar opciones de alergias
               flex: 50,
               child: SelectorPage("Alergias")),
         ],
       ),
     );
   }
-
 }
 
-class SelectorPage extends StatefulWidget{
-  final String dietaOalergia;
+
+class SelectorPage extends StatelessWidget{
+  final String dietaOalergia;  // Variable donde guardamos si vamos a trabajar con dietas o alergias
 
   const SelectorPage(this.dietaOalergia, {super.key});
-
-  @override
-  State<SelectorPage> createState() => _SelectorPageState();  // Esto non sei se poñer como cabrero ou como prueba
-}
-
-class _SelectorPageState extends State<SelectorPage>{
 
   @override
   Widget build(BuildContext context) {
@@ -141,30 +116,35 @@ class _SelectorPageState extends State<SelectorPage>{
       body: SafeArea(
         child: FilterListWidget<Opcion>(
           themeData: FilterListThemeData(context),
-          //allButtonText: "Todos",
-          hideSearchField: true,  // Así en horizontal non temos problema
+          hideSearchField: true,  // Ocultamos el buscador de opciones (???????????????????????????????????????)
           resetButtonText: "Borrar",
           applyButtonText: "Guardar",
-          controlButtons: const [/*ControlButtonType.All,*/ ControlButtonType.Reset],  // Quitamos botón todos de opcions de lista
-          hideSelectedTextCount: false,
-          listData: widget.dietaOalergia == "Dietas" ? listaAux.dietas
+          controlButtons: const [ControlButtonType.Reset],  // Añadimos un botón de borrar todas las opciones seleccionadas
+          selectedItemsText: "Seleccionados",  // Texto que se muestra al lado del número de opciones seleccionadas
+
+          // Lista de opciones disponibles (de dietas o alergias dependiendo del caso)
+          listData: dietaOalergia == "Dietas" ? listaAux.dietas
               : listaAux.alergias,
-          selectedListData: widget.dietaOalergia == "Dietas" ? context.read<OpcionesSeleccionadas>().opcionesDietas
-              : context.read<OpcionesSeleccionadas>().opcionesAlergias,    // Modificamos en el provider la lista de opciones correspondiente
-          onApplyButtonClick: (list) {
-            setState(() {
-              widget.dietaOalergia == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
-                  : context.read<OpcionesSeleccionadas>().set_opciones_alergias(List.from(list!));  // Actualizamos la lista de opciones correspondiente
-            }
-            );
+
+          // Lista donde se leen las opciones seleccionadas (leemos la lista del provider)
+          selectedListData: dietaOalergia == "Dietas" ? context.read<OpcionesSeleccionadas>().opcionesDietas
+              : context.read<OpcionesSeleccionadas>().opcionesAlergias,
+
+          onApplyButtonClick: (list) {  // Cuando clickamos en el botón guardar
+            // Guardamos en la lista correspondiente del provider (Dietas o Alergias) las opciones seleccionadas
+            dietaOalergia == "Dietas" ? context.read<OpcionesSeleccionadas>().set_opciones_dietas(List.from(list!))
+                : context.read<OpcionesSeleccionadas>().set_opciones_alergias(List.from(list!));
           },
-          choiceChipLabel: (item) {
+
+          choiceChipLabel: (item) {  // Texto de la opción
             return item!.opcion;
           },
-          validateSelectedItem: (list, val) {
+
+          validateSelectedItem: (list, val) {  // Identifica si una opción está seleccionada o no
             return list!.contains(val);
           },
-          onItemSearch: (opt, query) {
+
+          onItemSearch: (opt, query) {  // Acción a realizar en la búsqueda (obligatorio pese a tenerla deshabilitada)
             return opt.opcion.toLowerCase().contains(query.toLowerCase());
           },
         ),
