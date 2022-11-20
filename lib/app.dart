@@ -744,7 +744,7 @@ class Selector extends StatelessWidget {
           context,
           resetButtonText: "Borrar",
           applyButtonText: "Guardar",
-          hideSearchField: true,  // Ocultamos el buscador de opciones (???????????????????????????????????????)
+          hideSearchField: true,  // Ocultamos el buscador de opciones.
           selectedItemsText: "Seleccionadas",  // Texto que se muestra al lado del número de opciones seleccionadas
           themeData: FilterListThemeData(context),
           headlineText: 'Selecciona  ${seleccion}', // Título del cuadro de diálogo

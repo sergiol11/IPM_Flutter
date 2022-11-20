@@ -115,7 +115,7 @@ class SelectorPage extends StatelessWidget{
       body: SafeArea(
         child: FilterListWidget<Opcion>(
           themeData: FilterListThemeData(context),
-          hideSearchField: true,  // Ocultamos el buscador de opciones (???????????????????????????????????????)
+          hideSearchField: true,  // Ocultamos el buscador de opciones.
           resetButtonText: "Borrar",
           applyButtonText: "Guardar",
           controlButtons: const [ControlButtonType.Reset],  // Añadimos un botón de borrar todas las opciones seleccionadas
