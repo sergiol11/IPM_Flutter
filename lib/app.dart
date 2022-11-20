@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
                 theme: ThemeData(
                   primarySwatch: Colors.green,
                 ),
-                home: const MasterDetail(title: 'Edamam',)
+                home: const MasterDetail()
             )
         )
     );
@@ -41,9 +41,8 @@ class MyApp extends StatelessWidget {
 
 
 class MasterDetail extends StatelessWidget {
-  final String title;
 
-  const MasterDetail({super.key, required this.title});
+  const MasterDetail({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -665,13 +664,36 @@ class BuscadorNombreReceta extends StatelessWidget {
 }
 
 // Clase que contiene el TextFormField que permite introducir el valor mínimo y máximo de kcal.
-class Calorias extends StatelessWidget {
+class Calorias extends StatefulWidget {
+  final String limite;
+
+  const Calorias(this.limite, {super.key});
+
+  @override
+  State<Calorias> createState() => _CaloriasState(limite);
+}
+
+
+class _CaloriasState extends State<Calorias> {
   final String limite;  // Variable que indica si el valor a introducir es de mínimo o máximo.
   FocusNode myFocusNode = FocusNode();   // Widget para pedir o soltar foco
   final fieldText = TextEditingController();   // Controlador del texto que se introduce en el widget
   RegExp regex = RegExp(r'^[0-9]*$');  // Regex que solo permite dígitos (0-9)
 
-  Calorias(this.limite);
+  _CaloriasState(this.limite);
+
+  @override
+  void initState() {
+    super.initState();
+    myFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    myFocusNode.dispose();
+    fieldText.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
