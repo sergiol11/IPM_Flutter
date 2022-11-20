@@ -36,8 +36,6 @@ dependencies:
 
   http: any
 
-  multi_split_view: ^2.1.0
-
   filter_list: ^1.0.2
 
   gradient_floating_button: ^0.0.3
