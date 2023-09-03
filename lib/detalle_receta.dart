@@ -13,9 +13,9 @@ class LayoutDetalle extends StatelessWidget{
 
   Widget build(BuildContext context){
     return MediaQuery.of(context).orientation == Orientation.portrait ?  // Comprobamos que layout devolver (Vertical o horizontal)
-        LayoutDetalleVertical(info_receta)
+    LayoutDetalleVertical(info_receta)
         :
-        LayoutDetalleHorizontal(info_receta);
+    LayoutDetalleHorizontal(info_receta);
   }
 }
 

@@ -1,6 +1,5 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:multi_split_view/multi_split_view.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:practica/app.dart';
 import 'package:practica/providers.dart';
@@ -116,7 +115,7 @@ class SelectorPage extends StatelessWidget{
       body: SafeArea(
         child: FilterListWidget<Opcion>(
           themeData: FilterListThemeData(context),
-          hideSearchField: true,  // Ocultamos el buscador de opciones (???????????????????????????????????????)
+          hideSearchField: true,  // Ocultamos el buscador de opciones.
           resetButtonText: "Borrar",
           applyButtonText: "Guardar",
           controlButtons: const [ControlButtonType.Reset],  // Añadimos un botón de borrar todas las opciones seleccionadas
